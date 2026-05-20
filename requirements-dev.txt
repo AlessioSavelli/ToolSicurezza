@@ -1,0 +1,15 @@
+# Development-time dependencies (not required to run the tool)
+-r requirements.txt
+
+# Linting / formatting
+ruff>=0.6.0
+
+# Tests
+pytest>=8.0
+pytest-cov>=5.0
+
+# Type checking (optional)
+mypy>=1.10
+
+# Pre-commit hooks (optional)
+pre-commit>=3.7

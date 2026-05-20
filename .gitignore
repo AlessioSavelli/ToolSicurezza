@@ -1,0 +1,78 @@
+# =================================================================
+# Python
+# =================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+.eggs/
+build/
+dist/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# =================================================================
+# Reports — NEVER COMMIT (may contain plaintext credentials)
+# =================================================================
+reports/
+*.log
+*.html
+!docs/screenshots/*.html
+# Demo reports (sanitized, no personal data) are committed
+!wiki/demo-reports/*.html
+
+# =================================================================
+# JSON exports — may contain credentials
+# =================================================================
+audit.json
+audit_*.json
+*_creds.json
+
+# =================================================================
+# Caches
+# =================================================================
+*.cache
+pwd_audit_*_cache.json
+pwd_audit_tools_state.json
+
+# =================================================================
+# IDE / editor
+# =================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# =================================================================
+# Local environment overrides
+# =================================================================
+.env
+.env.local
+
+# =================================================================
+# Anything that looks like a credential file
+# =================================================================
+*.key
+!*.pub
+id_rsa
+id_ed25519
+id_ecdsa
+.git-credentials
+.pypirc
+*.pem
+*.p12
+*.pfx
