@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAQ — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html" class="active">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Reference<span>›</span>FAQ</div>
+  <div id="content">
+<h1 id="faq">FAQ</h1>
+<h2 id="is-this-malware">Is this malware?</h2>
+<p>No. The tool is <strong>defensive</strong>, runs locally on your own machine, never<br />
+transmits data over the network, and is open source. It replicates what<br />
+malware <em>would</em> do, so you can see the consequences and harden your<br />
+system before they happen.</p>
+<h2 id="why-does-windows-defender-flag-the-lazagne-install">Why does Windows Defender flag the LaZagne install?</h2>
+<p>Because LaZagne, in its original form, <em>is</em> a credential-recovery<br />
+binary, and Defender classifies all such binaries as PUA<br />
+(Potentially Unwanted Application). That's why our <code>infostealer_audit.py</code><br />
+<strong>does not auto-install LaZagne by default</strong>, and <strong>replicates the<br />
+useful parts internally</strong> in <code>modules/lazagne_light.py</code> (pure Python,<br />
+no external binary).</p>
+<p>If you really need the full LaZagne, opt-in with<br />
+<code>--install-flagged-tools</code>.</p>
+<h2 id="does-the-tool-need-internet-access">Does the tool need internet access?</h2>
+<p>Only for the live version-check step. Use <code>--no-online</code> to disable it.<br />
+Everything else operates strictly on local data.</p>
+<h2 id="does-the-tool-need-admin">Does the tool need admin?</h2>
+<p>No, for the default audit. Yes, for <code>pwd_audit.py --aggressive</code> (which<br />
+attempts the v20 ABE bypass via SYSTEM elevation).</p>
+<h2 id="why-arent-my-chrome-passwords-decrypted">Why aren't my Chrome passwords decrypted?</h2>
+<p>Most likely because they are protected by <strong>App-Bound Encryption (v20)</strong>,<br />
+introduced in Chrome 127 (July 2024). The default user-mode audit can<br />
+<strong>not</strong> decrypt these — and that's a <em>good thing</em>. It means even a<br />
+user-mode infostealer running as you would fail to steal them.</p>
+<p>You will see them in the report as <code>v20-protected</code>. The Cipher column<br />
+will be coloured green.</p>
+<p>If you want to verify this is correct, run <code>pwd_audit.py --aggressive</code>.<br />
+It will try to bypass v20 via SYSTEM elevation. On Chrome 131+ it will<br />
+fail at "Stratum 3" (the chrome.dll constant). That's expected and is<br />
+exactly the level of protection that Google designed.</p>
+<h2 id="why-does-it-say-57-v20-protected-but-show-0-in-the-accounts-tab">Why does it say "57 v20-protected" but show 0 in the accounts tab?</h2>
+<p>It's an authorisation thing: in default mode we show how many credentials<br />
+are protected but <strong>do not</strong> show their URLs or usernames — because we<br />
+literally can't decrypt them. With <code>--aggressive</code> (if successful), the<br />
+v20 entries would be decrypted and displayed.</p>
+<h2 id="what-if-my-browser-is-very-old">What if my browser is very old?</h2>
+<p>The tool will flag it as outdated in the <strong>Versions &amp; CVE</strong> tab and<br />
+generate a fix recommendation. Old Chrome versions are extremely<br />
+vulnerable (v10 era and earlier). Update.</p>
+<h2 id="i-have-a-desktop-without-wi-fi-why-does-it-say-0-profiles">I have a desktop without Wi-Fi — why does it say "0 profiles"?</h2>
+<p>Recent versions detect the Windows wireless service (<code>wlansvc</code>) state<br />
+and show "Wi-Fi (n/a): wireless service not running" instead of "0<br />
+profiles". If you still see "0 profiles", you are on an older version<br />
+of the tool — pull the latest.</p>
+<h2 id="can-i-run-this-on-linuxmacos">Can I run this on Linux/macOS?</h2>
+<p>No. The tool uses Windows DPAPI through <code>crypt32.dll</code>. Adding Linux/macOS<br />
+support would require a completely different implementation (Linux Chrome<br />
+uses libsecret/kwallet, macOS Chrome uses Keychain). Contributions<br />
+welcome, but it's a significant undertaking.</p>
+<h2 id="can-i-run-this-in-a-vm">Can I run this in a VM?</h2>
+<p>Yes, but the audit will reflect the <strong>VM's</strong> user profile, not the<br />
+host's. DPAPI keys are bound to the user account inside the VM. If you<br />
+want to audit the host, run it on the host.</p>
+<h2 id="does-it-work-with-corporate-managed-chrome-group-policy">Does it work with corporate-managed Chrome (group policy)?</h2>
+<p>Yes, but with caveats:</p>
+<ul>
+<li>If the corporate policy disables "save password", there will be<br />
+  nothing to decrypt — the audit will show 0 credentials.</li>
+<li>If the corporate policy enforces a Primary Password, Firefox audit<br />
+  will fail unless you provide that password (currently a CLI flag is<br />
+  not exposed for this).</li>
+</ul>
+<h2 id="how-accurate-is-the-current-stable-version-check">How accurate is the "current stable" version check?</h2>
+<p>The tool fetches from the same APIs Chrome/Firefox/Edge themselves use<br />
+for updates:</p>
+<ul>
+<li>Chromium Dash for Chrome</li>
+<li>product-details.mozilla.org for Firefox</li>
+<li>edgeupdates.microsoft.com for Edge</li>
+<li>api.github.com/repos/brave/brave-browser/releases/latest for Brave</li>
+</ul>
+<p>These are authoritative. The cached value is refreshed every 24 hours.</p>
+<p>It's possible for the tool to show "you are <em>more</em> recent than the<br />
+latest stable" if you're on a beta/dev channel. That's expected.</p>
+<h2 id="why-does-the-report-contain-my-passwords-in-clear-text">Why does the report contain my passwords in clear text?</h2>
+<p>Only if you passed <code>--showpassword</code>. Without it, passwords are masked<br />
+(<code>M*****a</code>). Delete the report after use, or regenerate without the<br />
+flag.</p>
+<h2 id="where-does-the-tool-store-its-data">Where does the tool store its data?</h2>
+<ul>
+<li><code>./reports/</code> — HTML and JSON output, kept until you delete them.</li>
+<li><code>%TEMP%\pwd_audit_*.json</code> — small JSON caches, expire after 24h.</li>
+<li><code>%TEMP%\&lt;random&gt;</code> — transient files for aggressive mode, deleted<br />
+  immediately after use.</li>
+</ul>
+<p>Nothing is written to the registry, system paths, or outside the<br />
+project directory.</p>
+<h2 id="will-running-this-make-defender-alert-on-me">Will running this make Defender alert on me?</h2>
+<p>The tool itself is a regular Python script and should not trigger<br />
+Defender. However:</p>
+<ul>
+<li>If you opt-in to install LaZagne, Defender will alert on the install.</li>
+<li>In aggressive mode, the scheduled-task-as-SYSTEM step <em>can</em> be<br />
+  reported by behavioural detection on some EDR products.</li>
+</ul>
+<p>If you see alerts, that's good. It means your security is working. The<br />
+tool's behaviour is documented and intentional.</p>
+<h2 id="can-the-tool-be-misused">Can the tool be misused?</h2>
+<p>In principle, anyone with administrative access to a Windows machine<br />
+can audit credentials on that machine, with or without our tool.<br />
+LaZagne, mimikatz, NirSoft, and many other tools have existed for over<br />
+a decade.</p>
+<p>What our tool offers over those is:</p>
+<ul>
+<li>A <strong>defensive</strong> framing (no exfiltration, no exploits, no malware<br />
+  samples included).</li>
+<li>A <strong>threat-model-aware</strong> report (what is decryptable vs. protected,<br />
+  ranked by criticality).</li>
+<li>An <strong>education</strong> layer (the timeline, the bypass technique catalogue).</li>
+</ul>
+<p>If misused, the legal and ethical responsibility lies with the user.<br />
+See <a href="../DISCLAIMER.md"><code>DISCLAIMER.md</code></a>.</p>
+<h2 id="how-often-should-i-re-run-it">How often should I re-run it?</h2>
+<p>Reasonable cadences:</p>
+<ul>
+<li><strong>After a security incident</strong>: immediately, then again 24 h later to<br />
+  verify nothing was missed.</li>
+<li><strong>After a browser major-version update</strong>: to verify the new ABE<br />
+  protection level applied.</li>
+<li><strong>Quarterly</strong>: to check that you haven't accumulated unnecessary<br />
+  saved credentials.</li>
+<li><strong>After migrating to a password manager</strong>: to confirm the browser is<br />
+  now empty.</li>
+</ul>
+<h2 id="im-a-security-researcher-can-i-cite-this-project">I'm a security researcher. Can I cite this project?</h2>
+<p>Sure. Suggested citation:</p>
+<pre><code>ToolSicurezza: Defensive infostealer audit suite for Windows.
+GitHub: https://github.com/AlessioSavelli/ToolSicurezza
+2026.
+</code></pre>
+<p>If you publish research that updates the KB, please open a PR with<br />
+the relevant additions and citations.</p>
+  </div>
+  <nav class="page-nav"><a href="Contributing-KB.html"><span class="nav-dir">← Previous</span><span class="nav-title">Contributing to KB</span></a><a href="Troubleshooting.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">Troubleshooting</span></a></nav>
+</main>
+</body>
+</html>

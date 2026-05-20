@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Architecture — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html" class="active">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Internals<span>›</span>Architecture</div>
+  <div id="content">
+<h1 id="architecture">Architecture</h1>
+<p>This page describes how <code>ToolSicurezza</code> is structured internally.</p>
+<h2 id="module-map">Module map</h2>
+<pre><code>┌──────────────────────────────────────────────────────────────────┐
+│ infostealer_audit.py (orchestrator, ~1000 LOC)                   │
+│                                                                  │
+│  9-step workflow:                                                │
+│   1. Load KB                  ──► browser_versions.load_kb()     │
+│   2. Detect installed         ──► browser_versions.detect_*()    │
+│   3. Online version check     ──► online_versions.fetch_all()    │
+│   4. Tool auto-install        ──► external_tools.ensure_*()      │
+│   5. Match version vs KB      ──► browser_versions.render_*()    │
+│   6. Decrypt Chromium creds   ──► chromium_decrypt.extract_all() │
+│      Decrypt Firefox creds    ──► firefox_nss.decrypt_*()        │
+│   7. Detect targets+legacy    ──► infostealer_targets +          │
+│                                    legacy_decrypt                │
+│   8. LaZagne Light            ──► lazagne_light.run_*()          │
+│   9. Generate fix recs        ──► browser_versions.generate_*()  │
+└──────────────────────────────────────────────────────────────────┘
+                       │
+                       ├─ detect language ──► i18n.detect_system_language()
+                       │                      i18n.get_strings(lang)
+                       ▼
+         render_html(state) → reports/infostealer_*.html
+</code></pre>
+<h2 id="module-responsibilities">Module responsibilities</h2>
+<h3 id="modulesbrowser_versionspy"><code>modules/browser_versions.py</code></h3>
+<ul>
+<li>Detect installed browser versions from registry and file <code>VersionInfo</code>.</li>
+<li>Load <code>kb/vulnerabilities.json</code>.</li>
+<li>Match a (browser, version) tuple against KB entries.</li>
+<li>Generate fix recommendations.</li>
+</ul>
+<p>No side effects, no filesystem writes.</p>
+<h3 id="moduleschromium_decryptpy"><code>modules/chromium_decrypt.py</code></h3>
+<ul>
+<li>DPAPI wrapper via <code>ctypes</code> + <code>crypt32.dll</code>.</li>
+<li>Read <code>Local State</code> JSON, extract and decrypt master key.</li>
+<li>Decrypt <code>Login Data</code> SQLite blobs in v10 and v20 formats.</li>
+<li>Discover all Chromium-based browser profiles.</li>
+</ul>
+<p>Pure local operation. Writes nothing outside <code>%TEMP%</code> (transient<br />
+SQLite copies, deleted after use).</p>
+<h3 id="modulesfirefox_nsspy"><code>modules/firefox_nss.py</code></h3>
+<ul>
+<li>Parse ASN.1 structures (manual parser, no <code>pyasn1</code> dependency).</li>
+<li>Compute PBKDF2-HMAC-SHA256 key from <code>globalSalt</code> + (optional)<br />
+  Primary Password.</li>
+<li>Decrypt <code>key4.db</code> master via AES-256-CBC.</li>
+<li>Decrypt <code>logins.json</code> entries via 3DES-CBC (legacy) or AES (modern).</li>
+</ul>
+<h3 id="modulesonline_versionspy"><code>modules/online_versions.py</code></h3>
+<ul>
+<li>HTTP GET against:</li>
+<li><code>https://chromiumdash.appspot.com/fetch_releases</code> for Chrome</li>
+<li><code>https://product-details.mozilla.org/1.0/firefox_versions.json</code> for Firefox</li>
+<li><code>https://edgeupdates.microsoft.com/api/products</code> for Edge</li>
+<li><code>https://api.github.com/repos/brave/brave-browser/releases/latest</code> for Brave</li>
+<li>Cache results in <code>%TEMP%\pwd_audit_versions_cache.json</code> for 24h.</li>
+<li>Compare installed vs latest, compute major-version gap and risk.</li>
+</ul>
+<h3 id="modulesexternal_toolspy"><code>modules/external_tools.py</code></h3>
+<ul>
+<li>Maintain a registry of optional Python tools.</li>
+<li>Check each one for availability (importable / on PATH).</li>
+<li>Auto-install missing tools via pip.</li>
+<li>Auto-upgrade installed tools every 24h.</li>
+<li>Defender-PUA-flagged tools are opt-in only via <code>--install-flagged-tools</code>.</li>
+</ul>
+<h3 id="modulesinfostealer_targetspy"><code>modules/infostealer_targets.py</code></h3>
+<ul>
+<li>Detection-only scans for nine target categories.</li>
+<li>Returns structured dicts with presence flag, severity tag, and free-form<br />
+  details.</li>
+</ul>
+<p>No decryption or extraction of third-party data, only enumeration.</p>
+<h3 id="moduleslazagne_lightpy"><code>modules/lazagne_light.py</code></h3>
+<ul>
+<li>Built-in replica of the most useful LaZagne categories.</li>
+<li>Each function returns a list of dicts (or one dict).</li>
+<li>Algorithms are public:</li>
+<li>WinSCP: published XOR-based scheme.</li>
+<li>FileZilla: base64 (not encrypted by design).</li>
+<li>Pidgin: plaintext XML.</li>
+<li>Thunderbird: NSS (reuses <code>firefox_nss.py</code>).</li>
+<li>For each category, no third-party scraping or network calls.</li>
+</ul>
+<h3 id="moduleslegacy_decryptpy"><code>modules/legacy_decrypt.py</code></h3>
+<ul>
+<li>Windows Credential Manager enumeration via <code>cmdkey /list</code>.</li>
+<li>IE Legacy Vault file detection (no decryption — out of scope).</li>
+<li>Outlook profile enumeration via registry.</li>
+</ul>
+<h3 id="modulesi18npy"><code>modules/i18n.py</code></h3>
+<ul>
+<li>Holds all user-visible strings for the HTML report in five languages:<br />
+<code>it</code>, <code>en</code>, <code>fr</code>, <code>de</code>, <code>es</code>.</li>
+<li><code>detect_system_language()</code> reads <code>HKCU\Control Panel\International\LocaleName</code><br />
+  via <code>winreg</code>, splits on <code>-</code> to get the 2-letter code, and returns it if<br />
+  it is in the supported set. Falls back to the <code>locale</code> module, then to<br />
+<code>"en"</code>.</li>
+<li><code>get_strings(lang)</code> returns the flat <code>dict[str, str]</code> for the requested<br />
+  language. Unknown codes fall back to English.</li>
+<li><code>SUPPORTED = {"it", "en", "fr", "de", "es"}</code> is the authoritative set.<br />
+  The CLI also accepts <code>"du"</code> as an alias for <code>"de"</code>, resolved in<br />
+<code>main()</code> before <code>get_strings()</code> is called.</li>
+<li>Both <code>infostealer_audit.py</code> and <code>pwd_audit.py</code> import this module.</li>
+<li>Adding a new language requires only a new key in the <code>_S</code> dictionary.<br />
+  See <a href="Adding-a-Browser.html">Adding a Browser</a> for the analogous pattern.</li>
+</ul>
+<p>No side effects. No file I/O. No network calls.</p>
+<h3 id="kbvulnerabilitiesjson"><code>kb/vulnerabilities.json</code></h3>
+<p>A JSON file with four top-level sections:</p>
+<ul>
+<li><code>_meta</code> — schema version (currently <strong>1.1</strong>), last updated,<br />
+  current stable versions, sources.</li>
+<li><code>browser_cves</code> — <em>(new in v1.1)</em> array of CVE objects for Chrome/Edge/<br />
+  Windows with CVSS score, in-wild flag, affected version range, and fix<br />
+  version. Sourced from NVD, zero-day.cz, and vendor advisories.</li>
+<li><code>chromium_abe_timeline</code> — array of version-range entries.</li>
+<li><code>bypass_techniques</code> — keyed by technique-ID (<code>com-elevator-path-bypass</code>,<br />
+<code>dll-injection-chrome-exe</code>, <code>debugger-attach-voidstealer</code>,<br />
+<code>server-side-exfil-decrypt</code>, etc.).</li>
+<li><code>browsers</code> — per-browser metadata (config path, CLSID, etc.).</li>
+<li><code>known_infostealers</code> — <strong>20 families</strong> keyed by family name<br />
+  (RedLine, Lumma, VoidStealer 2.0, Storm, REMUS, ...).</li>
+<li><code>infostealer_targets</code> — keyed by target category.</li>
+</ul>
+<h2 id="data-flow-for-decrypt-all-chromium-passwords">Data flow for "decrypt all Chromium passwords"</h2>
+<pre><code>Local State (JSON)
+   │
+   ├─ os_crypt.encrypted_key (base64)
+   │     │
+   │     ├─ strip &quot;DPAPI&quot; prefix
+   │     ├─ CryptUnprotectData()  ── user-context
+   │     └─► MASTER_KEY_v10 (32 bytes)
+   │
+   └─ os_crypt.app_bound_encrypted_key (base64, Chrome 127+)
+         │
+         ├─ strip &quot;APPB&quot; prefix + 4-byte version
+         ├─ CryptUnprotectData()  ── needs SYSTEM context (aggressive mode)
+         ├─ inner: another DPAPI blob, user-context
+         └─► MASTER_KEY_v20 (32 bytes)   [aggressive mode only]
+
+Login Data (SQLite)
+   │
+   └─ logins.password_value (BLOB)
+         │
+         if blob[:3] == b&quot;v10&quot;:
+            nonce  = blob[3:15]
+            ct_tag = blob[15:]
+            AESGCM(MASTER_KEY_v10).decrypt(nonce, ct_tag) → plaintext
+         elif blob[:3] == b&quot;v20&quot;:
+            (requires MASTER_KEY_v20)
+            AESGCM(MASTER_KEY_v20).decrypt(nonce, ct_tag) → opaque header + plaintext
+         else:
+            CryptUnprotectData(blob) → plaintext  (pre-v10)
+</code></pre>
+<h2 id="data-flow-for-online-version-check">Data flow for "online version check"</h2>
+<pre><code>fetch_all_latest()
+   │
+   ├─ Check %TEMP%\pwd_audit_versions_cache.json
+   │  └─ if age &lt; 24h: return cached
+   │
+   ├─ HTTP GET chromiumdash.appspot.com
+   ├─ HTTP GET product-details.mozilla.org
+   ├─ HTTP GET edgeupdates.microsoft.com
+   ├─ HTTP GET api.github.com (brave releases)
+   │
+   ├─ Parse + normalise to {version, major, release_date, source}
+   ├─ Save to cache
+   └─ Return dict
+</code></pre>
+<h2 id="data-flow-for-aggressive-mode">Data flow for aggressive mode</h2>
+<pre><code>User runs: py pwd_audit.py --aggressive
+   │
+   ├─ is_admin()? → no
+   │  └─ ShellExecuteW(verb=&quot;runas&quot;, file=python.exe, args=...)
+   │     └─ UAC prompt → user accepts
+   │        └─ Elevated console starts the same script with admin token
+   │
+   ├─ get_app_bound_key_aggressive(local_state)
+   │  ├─ user-DPAPI unwrap outer blob
+   │  ├─ Write inner blob to %TEMP%\pa&lt;rnd&gt;i.bin
+   │  ├─ Write helper script to %TEMP%\pa&lt;rnd&gt;h.py
+   │  ├─ Write batch wrapper to %TEMP%\pa&lt;rnd&gt;w.bat
+   │  ├─ schtasks /Create /RU SYSTEM /TR &lt;wrapper.bat&gt;
+   │  ├─ schtasks /Run
+   │  ├─ Wait for output file
+   │  ├─ Read output (SYSTEM-decrypted inner blob)
+   │  ├─ Try brute-force 32-byte windows against a known v20 sample
+   │  └─ schtasks /Delete + remove temp files
+   │
+   └─ If brute-force succeeds → MASTER_KEY_v20 → decrypt all v20 entries
+      If brute-force fails → &quot;Stratum 3 resists&quot; → fall back to v20-protected
+</code></pre>
+<h2 id="threading-and-concurrency">Threading and concurrency</h2>
+<p>The tool is <strong>strictly single-threaded</strong>. Operations are sequential.<br />
+This is intentional:</p>
+<ul>
+<li>The output is more predictable and easier to debug.</li>
+<li>DPAPI and registry access are I/O bound; concurrency would not help<br />
+  much.</li>
+<li>Avoids race conditions on shared temp files.</li>
+</ul>
+<p>The only "parallel" operation is the <code>subprocess</code> invocation of<br />
+<code>schtasks</code> and <code>netsh</code>, which are atomic from our perspective.</p>
+<h2 id="error-handling-philosophy">Error handling philosophy</h2>
+<ul>
+<li><strong>Never crash the whole audit because one source failed.</strong> Every<br />
+  module function wraps its work in a try/except and returns an empty<br />
+  result on failure.</li>
+<li><strong>Always log what was attempted.</strong> Failure messages go to stderr<br />
+  with the module name and a short reason.</li>
+<li><strong>Defensive timeouts.</strong> Every <code>subprocess.run</code> has a <code>timeout</code><br />
+  argument so a hanging external process can't lock up the audit.</li>
+</ul>
+<h2 id="file-system-footprint">File system footprint</h2>
+<p>The tool writes only to:</p>
+<ul>
+<li><code>./reports/</code> — HTML and JSON output (excluded from git via<br />
+<code>.gitignore</code>).</li>
+<li><code>./wiki/demo-reports/</code> — sanitized demo HTML reports committed to<br />
+  the repository (personal data stripped by <code>sanitize_demo_reports.py</code>).</li>
+<li><code>%TEMP%\pwd_audit_*.json</code> — small caches.</li>
+<li><code>%TEMP%\&lt;random&gt;</code> — transient SQLite copies and helper scripts in<br />
+  aggressive mode, deleted immediately after use.</li>
+</ul>
+<p>Nothing is written to the registry. Nothing is written to system<br />
+paths. Nothing is written outside the project directory or <code>%TEMP%</code>.</p>
+  </div>
+  <nav class="page-nav"><a href="Demo-Reports.html"><span class="nav-dir">← Previous</span><span class="nav-title">Demo Reports</span></a><a href="Knowledge-Base.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">Knowledge Base</span></a></nav>
+</main>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Installation — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html" class="active">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Getting Started<span>›</span>Installation</div>
+  <div id="content">
+<h1 id="installation">Installation</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OS</strong></td>
+<td>Windows 10 (1809+) or Windows 11. The tool uses DPAPI through <code>crypt32.dll</code>, so it will not work on Linux, macOS, or under WSL.</td>
+</tr>
+<tr>
+<td><strong>Python</strong></td>
+<td>3.10 or later. 3.12 is the version tested most.</td>
+</tr>
+<tr>
+<td><strong>Disk</strong></td>
+<td>&lt; 50 MB</td>
+</tr>
+<tr>
+<td><strong>RAM</strong></td>
+<td>Negligible (operates on small SQLite copies in <code>%TEMP%</code>)</td>
+</tr>
+<tr>
+<td><strong>Network</strong></td>
+<td>Optional. Only needed for live version-check from official vendors.</td>
+</tr>
+<tr>
+<td><strong>Privileges</strong></td>
+<td>None for the default audit. Administrator required only for <code>--aggressive</code> mode (v20 ABE attempt).</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note on virtualisation:</strong> if you run the tool inside a Hyper-V or<br />
+VirtualBox VM, the DPAPI keychain is the VM's user, not the host's.<br />
+You will get the credentials saved in the VM, not on your laptop/desktop.</p>
+</blockquote>
+<h2 id="step-by-step-install">Step-by-step install</h2>
+<h3 id="1-clone-the-repository">1. Clone the repository</h3>
+<pre><code class="language-powershell">git clone https://github.com/AlessioSavelli/ToolSicurezza.git
+cd ToolSicurezza
+</code></pre>
+<h3 id="2-recommended-create-a-virtual-environment">2. (Recommended) create a virtual environment</h3>
+<pre><code class="language-powershell">py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+</code></pre>
+<p>If your execution policy blocks the activate script:</p>
+<pre><code class="language-powershell">Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+</code></pre>
+<h3 id="3-install-dependencies">3. Install dependencies</h3>
+<pre><code class="language-powershell">py -m pip install -r requirements.txt
+</code></pre>
+<p>This installs only <code>cryptography</code>. Everything else is either standard<br />
+library, or auto-installed by the tool on first run (<code>pypykatz</code>,<br />
+<code>browser_cookie3</code>).</p>
+<h3 id="4-optional-install-the-extra-python-recovery-tools-manually">4. (Optional) install the extra Python recovery tools manually</h3>
+<pre><code class="language-powershell">py -m pip install pypykatz browser-cookie3
+</code></pre>
+<p>You don't have to. <code>infostealer_audit.py</code> will do it for you on first<br />
+run.</p>
+<h3 id="5-verify">5. Verify</h3>
+<pre><code class="language-powershell">py infostealer_audit.py --help
+</code></pre>
+<p>You should see the help message.</p>
+<h2 id="updating">Updating</h2>
+<pre><code class="language-powershell">git pull
+py -m pip install -U -r requirements.txt
+</code></pre>
+<p>The auto-update mechanism for <code>pypykatz</code> and <code>browser_cookie3</code> checks<br />
+for newer versions every 24 hours and upgrades silently. Force it with<br />
+<code>--force-tool-update</code>.</p>
+<h2 id="uninstalling">Uninstalling</h2>
+<pre><code class="language-powershell">cd ..
+Remove-Item -Recurse -Force ToolSicurezza
+</code></pre>
+<p>If you used a virtualenv, also delete <code>%LOCALAPPDATA%\pip\Cache</code> and<br />
+the auto-installed pip packages, if you want a fully clean removal:</p>
+<pre><code class="language-powershell">py -m pip uninstall -y cryptography pypykatz browser-cookie3
+</code></pre>
+<p>The tool also creates a few cache/state files in <code>%TEMP%</code>:</p>
+<ul>
+<li><code>pwd_audit_versions_cache.json</code></li>
+<li><code>pwd_audit_tools_state.json</code></li>
+</ul>
+<p>These are safe to delete at any time.</p>
+<h2 id="common-installation-issues">Common installation issues</h2>
+<h3 id="py-is-not-recognized">"py is not recognized"</h3>
+<p>Install Python from python.org and make sure the <em>py launcher</em> checkbox<br />
+is enabled. Alternatively, use <code>python</code> instead of <code>py</code>.</p>
+<h3 id="git-is-not-recognized">"git is not recognized"</h3>
+<p>Install Git for Windows from https://git-scm.com/.</p>
+<h3 id="cryptography-install-fails-on-windows"><code>cryptography</code> install fails on Windows</h3>
+<p>Make sure you are using a modern Python (3.10+) and pip (&gt;= 21).<br />
+<code>cryptography</code> ships pre-built wheels for Windows since v3.4.</p>
+<pre><code class="language-powershell">py -m pip install --upgrade pip
+py -m pip install cryptography
+</code></pre>
+<h3 id="defender-flags-the-lazagne-install">Defender flags the LaZagne install</h3>
+<p>This is expected. <code>LaZagne</code> is a well-known PUA-flagged binary. By<br />
+default <code>ToolSicurezza</code> <strong>does not</strong> auto-install it. To opt in:</p>
+<pre><code class="language-powershell">py infostealer_audit.py --install-flagged-tools
+</code></pre>
+<p>If you go this route, you may need a Defender exclusion for the install<br />
+directory. Do this <strong>only on your own development machine</strong> and never on<br />
+production systems.</p>
+<h3 id="aggressive-mode-fails-to-elevate">Aggressive mode fails to elevate</h3>
+<p>You need a user account that is a member of the local Administrators<br />
+group. The UAC prompt must be accepted. On systems where UAC is<br />
+disabled or the account is restricted, aggressive mode will not work.</p>
+  </div>
+  <nav class="page-nav"><a href="Home.html"><span class="nav-dir">← Previous</span><span class="nav-title">Home</span></a><a href="Quick-Start.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">Quick Start</span></a></nav>
+</main>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Adding a Browser — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html" class="active">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Internals<span>›</span>Adding a Browser</div>
+  <div id="content">
+<h1 id="adding-a-browser">Adding a Browser</h1>
+<p>This page is for contributors who want to add support for a new<br />
+Chromium-based browser (or a new Gecko-based browser).</p>
+<h2 id="is-it-chromium-based">Is it Chromium-based?</h2>
+<p>If yes, the data layout is essentially the same as Chrome:</p>
+<pre><code>%LOCALAPPDATA%\&lt;Vendor&gt;\&lt;Browser&gt;\User Data\
+├── Local State                  ← contains os_crypt.encrypted_key
+├── Default\
+│   └── Login Data               ← SQLite with logins table
+├── Profile 1\
+│   └── Login Data
+└── ...
+</code></pre>
+<p>To add support, you need to do three things:</p>
+<h3 id="1-register-the-path-in-chromium_decryptpy">1. Register the path in <code>chromium_decrypt.py</code></h3>
+<p>Edit <code>discover_chromium_browsers()</code>:</p>
+<pre><code class="language-python">candidates = [
+    (&quot;Chrome&quot;, local / &quot;Google/Chrome/User Data&quot;),
+    (&quot;Edge&quot;, local / &quot;Microsoft/Edge/User Data&quot;),
+    # ...
+    (&quot;YourBrowser&quot;, local / &quot;Vendor/YourBrowser/User Data&quot;),  # NEW
+]
+</code></pre>
+<h3 id="2-register-version-detection-in-browser_versionspy">2. Register version detection in <code>browser_versions.py</code></h3>
+<p>Add a <code>detect_&lt;browser&gt;_version()</code> function:</p>
+<pre><code class="language-python">def detect_yourbrowser_version() -&gt; str | None:
+    candidates = [
+        Path(os.environ.get(&quot;PROGRAMFILES&quot;, &quot;C:\\Program Files&quot;))
+        / &quot;Vendor/YourBrowser/Application/yourbrowser.exe&quot;,
+        Path(os.environ.get(&quot;LOCALAPPDATA&quot;, &quot;&quot;))
+        / &quot;Vendor/YourBrowser/Application/yourbrowser.exe&quot;,
+    ]
+    for c in candidates:
+        if c.exists():
+            v = _get_file_version(c)
+            if v:
+                return v
+    return None
+</code></pre>
+<p>And call it from <code>detect_all_browsers()</code>.</p>
+<h3 id="3-add-to-the-kb">3. Add to the KB</h3>
+<p>Open <code>kb/vulnerabilities.json</code> and add an entry under <code>browsers</code>:</p>
+<pre><code class="language-json">&quot;YourBrowser&quot;: {
+  &quot;vendor&quot;: &quot;Vendor Inc.&quot;,
+  &quot;engine&quot;: &quot;Chromium&quot;,
+  &quot;abe_enabled&quot;: true,
+  &quot;config_path&quot;: &quot;%LOCALAPPDATA%\\Vendor\\YourBrowser\\User Data&quot;,
+  &quot;version_binary&quot;: &quot;%PROGRAMFILES%\\Vendor\\YourBrowser\\Application\\yourbrowser.exe&quot;,
+  &quot;current_stable&quot;: &quot;&lt;known version&gt;&quot;,
+  &quot;notes&quot;: &quot;...&quot;
+}
+</code></pre>
+<h3 id="4-optional-add-live-version-check">4. (Optional) Add live version check</h3>
+<p>If the vendor publishes a JSON/API endpoint with the latest stable<br />
+version, add a <code>fetch_yourbrowser_latest()</code> function in<br />
+<code>modules/online_versions.py</code> and call it from <code>fetch_all_latest()</code>.</p>
+<p>If no API exists, scrape with caution (be polite, cache aggressively).</p>
+<h3 id="5-optional-crypto-wallet-extensions">5. (Optional) Crypto wallet extensions</h3>
+<p>If your browser uses the same extension ID scheme as Chrome, the<br />
+existing <code>infostealer_targets.check_crypto_wallets()</code> will already<br />
+discover wallet extensions in this browser's profiles.</p>
+<h2 id="is-it-gecko-based">Is it Gecko-based?</h2>
+<p>If yes (Firefox, LibreWolf, Waterfox, Pale Moon, ...), the data is<br />
+NSS-based:</p>
+<pre><code>%APPDATA%\&lt;Vendor&gt;\&lt;Browser&gt;\Profiles\&lt;random&gt;.default\
+├── key4.db                      ← SQLite, contains NSS keys
+└── logins.json                  ← encrypted login blobs
+</code></pre>
+<p>Edit <code>modules/firefox_nss.py</code>:</p>
+<pre><code class="language-python">def discover_yourbrowser_profiles() -&gt; list[Path]:
+    base = Path(os.environ.get(&quot;APPDATA&quot;, &quot;&quot;)) / &quot;Vendor/YourBrowser/Profiles&quot;
+    if not base.exists():
+        return []
+    profiles = []
+    for sub in base.iterdir():
+        if sub.is_dir() and (sub / &quot;key4.db&quot;).exists():
+            profiles.append(sub)
+    return profiles
+</code></pre>
+<p>And in <code>infostealer_audit.py</code>, in the Firefox section, add:</p>
+<pre><code class="language-python">yb_profiles = firefox_nss.discover_yourbrowser_profiles()
+for prof in yb_profiles:
+    creds = firefox_nss.decrypt_firefox_logins(prof)
+    # ... add to state[&quot;firefox_accounts&quot;][prof.name]
+</code></pre>
+<h2 id="testing-your-contribution">Testing your contribution</h2>
+<pre><code class="language-powershell"># 1. Sanity check (don't crash)
+py infostealer_audit.py --no-online --no-tools
+
+# 2. Live online check still works
+py infostealer_audit.py --no-tools
+
+# 3. Full audit with the new browser installed
+py infostealer_audit.py --showpassword
+
+# 4. Verify the HTML report has a section for your browser
+</code></pre>
+<h2 id="dont-forget">Don't forget</h2>
+<ul>
+<li>Update <code>wiki/Installation.md</code> if your browser has special install<br />
+  requirements.</li>
+<li>Update the supported-browsers list in <code>README.md</code> and <code>README_IT.md</code>.</li>
+<li>Add the browser to the <code>chromium_abe_timeline</code> if it diverges from<br />
+  Chrome's ABE schedule (Edge generally tracks Chrome but lags ~0-2<br />
+  versions; Brave tracks Chromium upstream).</li>
+<li>If your browser implements a custom encryption scheme different from<br />
+  v10/v20, document it in <code>kb/vulnerabilities.json</code> and implement a<br />
+  custom decryption path.</li>
+</ul>
+<h2 id="submitting">Submitting</h2>
+<p>Open a PR with:</p>
+<ul>
+<li>Code changes in <code>modules/</code>.</li>
+<li>KB entry under <code>browsers</code>.</li>
+<li>Updated docs (README + wiki).</li>
+<li>A screenshot of the audit detecting your browser successfully.</li>
+</ul>
+  </div>
+  <nav class="page-nav"><a href="Knowledge-Base.html"><span class="nav-dir">← Previous</span><span class="nav-title">Knowledge Base</span></a><a href="Contributing-KB.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">Contributing to KB</span></a></nav>
+</main>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contributing to KB — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html" class="active">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Internals<span>›</span>Contributing to KB</div>
+  <div id="content">
+<h1 id="contributing-to-the-knowledge-base">Contributing to the Knowledge Base</h1>
+<p>The KB in <code>kb/vulnerabilities.json</code> is what gives the audit tool its<br />
+context. Without an up-to-date KB, the version check still works but<br />
+the bypass technique mapping becomes stale.</p>
+<h2 id="when-to-update">When to update</h2>
+<ul>
+<li>When a new Chrome milestone introduces a security change (typically<br />
+  every 4 weeks).</li>
+<li>When a public research paper or blog post documents a new bypass.</li>
+<li>When a new infostealer family is disclosed.</li>
+<li>When you find a factual error or outdated entry.</li>
+</ul>
+<h2 id="sources-we-accept">Sources we accept</h2>
+<p>✅ Acceptable:</p>
+<ul>
+<li>Peer-reviewed conference / journal papers (USENIX, IEEE S&amp;P, CCS,<br />
+  Black Hat / DEF CON archived presentations).</li>
+<li>Vendor security advisories (Google, Microsoft, Mozilla, Apple).</li>
+<li>Security firms' research blogs with public-facing authorship<br />
+  (Mandiant, CrowdStrike, BlackBerry Research, Cybereason, Check Point,<br />
+  Group-IB, Sophos, Kaspersky, ESET, Trend Micro, Cisco Talos, etc.).</li>
+<li>Reputable independent researchers' public posts (e.g. on GitHub,<br />
+  Medium, personal blogs) with verifiable identity.</li>
+<li>Public CVE advisories with NIST NVD entries.</li>
+</ul>
+<p>🛑 Not acceptable:</p>
+<ul>
+<li>"I tested this myself but haven't published" — unless you publish<br />
+  the research alongside the PR.</li>
+<li>Private threat-intelligence reports (unless the source has<br />
+  explicitly authorised public reproduction).</li>
+<li>Forum posts with anonymous claims and no PoC.</li>
+<li>Marketing materials that lack technical substance.</li>
+</ul>
+<h2 id="structure-of-a-contribution">Structure of a contribution</h2>
+<p>A KB contribution PR should touch:</p>
+<ol>
+<li><code>kb/vulnerabilities.json</code> — the actual data.</li>
+<li><code>_meta.last_updated</code> — bump the date.</li>
+<li><code>_meta.sources</code> — append the new URL if not already present.</li>
+<li>PR description — at least one quote from the source justifying each<br />
+   factual claim.</li>
+</ol>
+<p>Example PR description for a new infostealer:</p>
+<pre><code class="language-markdown">## New infostealer: FooStealer (2026-Q1)
+
+Adds an entry under `known_infostealers.FooStealer` based on:
+
+- Cybereason blog post, 2026-02-10: &quot;FooStealer technical analysis&quot;
+  https://www.cybereason.com/blog/foostealer-2026
+
+Key claims:
+
+- First seen 2026-01. Cite: &quot;First sightings on 27 January 2026&quot; (Cybereason).
+- v20 bypass via debugger-attach. Cite: &quot;FooStealer attaches as a debugger
+  to chrome.exe and reads the key from the heap&quot; (Cybereason).
+- Targets Chrome 127-148. Cite: &quot;Tested working on Chrome 127 through 148&quot;
+  (Cybereason).
+
+No new bypass technique to add — debugger-attach is already documented under
+`bypass_techniques.debugger-attach-voidstealer`.
+</code></pre>
+<h2 id="style-guidelines">Style guidelines</h2>
+<ul>
+<li>Use present-tense, descriptive labels: "Inner AES wrapping" not<br />
+  "Introduced inner AES wrapping".</li>
+<li>ISO dates: <code>2024-11-12</code>, not <code>Nov 12, 2024</code>.</li>
+<li>Version-range strings consistent: <code>131 - 135</code>, <code>&gt;= 148</code>, <code>&lt; 127</code>.</li>
+<li><code>decrypt_difficulty</code> and <code>complexity</code> use the predefined enums:<br />
+  TRIVIAL / LOW / MEDIUM / HIGH / VERY_HIGH (with VERY_HARD for difficulty).</li>
+<li>Field <code>used_by</code>: list of strings, infostealer names exactly as in<br />
+<code>known_infostealers</code> keys (or "X family", "Y fork").</li>
+<li>Field <code>ref</code>: a single URL to the primary source. If you have<br />
+  multiple, pick the most authoritative.</li>
+</ul>
+<h2 id="things-to-leave-out">Things to leave out</h2>
+<p>We are conservative about what we publish:</p>
+<ul>
+<li>❌ Sample SHA256 hashes (these can be misused).</li>
+<li>❌ Operational C2 domain lists.</li>
+<li>❌ Detailed YARA rules unless they are already public.</li>
+<li>❌ Detonation procedures.</li>
+<li>❌ Personal information of researchers or victims.</li>
+</ul>
+<p>We include:</p>
+<ul>
+<li>✅ Documented TTPs at the conceptual level.</li>
+<li>✅ Browser/OS targets.</li>
+<li>✅ Bypass technique categories.</li>
+<li>✅ Public research links.</li>
+</ul>
+<h2 id="schema-validation">Schema validation</h2>
+<p>There is no strict schema yet. Please:</p>
+<pre><code class="language-powershell">py -c &quot;import json; json.load(open('kb/vulnerabilities.json', encoding='utf-8')); print('KB OK')&quot;
+</code></pre>
+<p>Plan: introduce JSON Schema in a future release for CI-level<br />
+validation.</p>
+<h2 id="when-in-doubt">When in doubt</h2>
+<p>Open a draft PR and ping the maintainers in the description. We<br />
+prefer over-communication when in ambiguous territory. There's no<br />
+penalty for asking before submitting.</p>
+  </div>
+  <nav class="page-nav"><a href="Adding-a-Browser.html"><span class="nav-dir">← Previous</span><span class="nav-title">Adding a Browser</span></a><a href="FAQ.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">FAQ</span></a></nav>
+</main>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Troubleshooting — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html" class="active">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Reference<span>›</span>Troubleshooting</div>
+  <div id="content">
+<h1 id="troubleshooting">Troubleshooting</h1>
+<h2 id="sintassi-ok-but-the-tool-exits-silently">"Sintassi OK" but the tool exits silently</h2>
+<p>Make sure you didn't accidentally pipe stdin somewhere. Run with <code>--no-html</code><br />
+first to see all console output.</p>
+<h2 id="cryptography-import-error">"cryptography" import error</h2>
+<p>Install or upgrade:</p>
+<pre><code class="language-powershell">py -m pip install --upgrade cryptography
+</code></pre>
+<h2 id="py-is-not-recognized">"py is not recognized"</h2>
+<p>The Python launcher is not in PATH. Either:</p>
+<ul>
+<li>Reinstall Python from python.org with "Add Python to PATH" checked, <strong>or</strong></li>
+<li>Use <code>python</code> instead of <code>py</code>.</li>
+</ul>
+<h2 id="no-module-named-modules">"No module named modules"</h2>
+<p>You are running the script from outside the project root. <code>cd</code> into<br />
+<code>ToolSicurezza/</code> first.</p>
+<h2 id="master-key-v10-failed">"Master key v10: failed"</h2>
+<p>Either your Local State is corrupted, or you're trying to read a profile<br />
+belonging to another user. Verify:</p>
+<pre><code class="language-powershell">Get-Content &quot;$env:LOCALAPPDATA\Google\Chrome\User Data\Local State&quot; | Select-String &quot;encrypted_key&quot;
+</code></pre>
+<p>You should see a base64 string. If empty, the browser profile is not<br />
+initialised (browser hasn't been launched yet).</p>
+<h2 id="dpapi-fail-err-2146893813-0x8009000b">"DPAPI fail err=-2146893813 (0x8009000B)"</h2>
+<p>Translation: <code>NTE_BAD_DATA</code>. The blob you tried to decrypt is not valid<br />
+DPAPI data, or the data was encrypted with a different user's key.</p>
+<p>If this happens in <code>--aggressive</code> mode, it likely means the blob format<br />
+has changed in a newer Chrome — please open an issue with your Chrome<br />
+version.</p>
+<h2 id="aggressive-mode-schtasks-create-failed-tr-261-chars">Aggressive mode: "schtasks /Create failed (/TR &gt; 261 chars)"</h2>
+<p>This was a bug fixed in v3. We now use a <code>.bat</code> wrapper to keep the<br />
+<code>/TR</code> short. If you still see it, you're on an older build — pull<br />
+latest.</p>
+<h2 id="aggressive-mode-brute-force-key-not-found">Aggressive mode: brute-force key not found</h2>
+<p>Expected on Chrome 131+. The v20 ABE has an additional Stratum 3<br />
+(chrome.dll constant) that prevents key recovery by SYSTEM-DPAPI alone.<br />
+Read <a href="HTML-Report.html">HTML Report</a> tab "ABE Timeline" for details.</p>
+<h2 id="wi-fi-profiles-0-on-a-laptop">"Wi-Fi profiles: 0" on a laptop</h2>
+<p>The tool detects <code>wlansvc not running</code> automatically. If the service is<br />
+actually running but you still get 0, try:</p>
+<pre><code class="language-powershell">netsh wlan show profiles
+</code></pre>
+<p>If that command shows profiles but the tool still finds none, please<br />
+file an issue with the exact <code>netsh</code> output (with SSIDs redacted).</p>
+<h2 id="external-tools-tab-shows-lazagne-installed-but-i-never-installed-it">"External tools" tab shows "lazagne installed" but I never installed it</h2>
+<p>In v2 we had a false-positive on the LaZagne detection. v3 fixes this<br />
+using <code>shutil.which</code> + module-presence checks. If you still see false<br />
+positives, please file an issue.</p>
+<h2 id="browser-version-detection-fails">Browser version detection fails</h2>
+<p>The tool tries multiple methods: registry keys, file <code>VersionInfo</code> of<br />
+the <code>.exe</code>, and <code>EdgeUpdate</code> for Edge. If all fail:</p>
+<ul>
+<li>Make sure the browser is installed via official installer (not a<br />
+  portable zip).</li>
+<li>Run as the same user who installed the browser.</li>
+<li>Try <code>py -c "from modules.browser_versions import detect_chrome_version; print(detect_chrome_version())"</code>.</li>
+</ul>
+<h2 id="online-version-check-fails-unavailable">Online version check fails / "unavailable"</h2>
+<ul>
+<li>Check internet connectivity.</li>
+<li>Try <code>--force-tool-update</code> to invalidate the cache.</li>
+<li>Some corporate networks block GitHub API or Mozilla's product-details<br />
+  endpoint. Use <code>--no-online</code> if so.</li>
+</ul>
+<h2 id="html-report-is-0-bytes-corrupted">HTML report is 0 bytes / corrupted</h2>
+<p>Something errored after the file was opened but before content was<br />
+written. Run with <code>--no-html</code> to see if a Python exception is thrown,<br />
+and report it.</p>
+<h2 id="defender-deleted-my-lazagne-install">"Defender deleted my LaZagne install"</h2>
+<p>Expected. Defender flags LaZagne as PUA. Either:</p>
+<ul>
+<li>Don't install LaZagne (the default — our <code>lazagne_light</code> replaces<br />
+  most of it natively), <strong>or</strong></li>
+<li>Add a Defender exclusion for the install path (only on dedicated<br />
+  audit machines).</li>
+</ul>
+<h2 id="aggressive-mode-shows-the-elevated-console-for-1-second-and-closes">Aggressive mode shows the elevated console for 1 second and closes</h2>
+<p>You're running with <code>--no-pause</code>. Remove that flag to keep the console<br />
+open. The log is also written to <code>reports/audit_aggressive_*.log</code> —<br />
+read it there.</p>
+<h2 id="permission-denied-on-reports">"Permission denied" on <code>reports/</code></h2>
+<p>The directory may be read-only or owned by a different user. Delete it<br />
+and let the tool re-create it:</p>
+<pre><code class="language-powershell">Remove-Item -Recurse -Force reports
+py infostealer_audit.py
+</code></pre>
+<h2 id="how-to-get-more-debug-output">How to get more debug output</h2>
+<p>Set environment variable <code>PWD_AUDIT_DEBUG=1</code> (planned, not yet<br />
+implemented). For now, edit the script and add <code>print()</code> statements<br />
+where useful.</p>
+<h2 id="i-see-different-results-on-different-runs">I see different results on different runs</h2>
+<p>Browser data changes constantly (you log in, you save passwords, you<br />
+clear data). That's normal. The version check is cached for 24h so<br />
+that part is stable.</p>
+<h2 id="how-to-report-a-bug">How to report a bug</h2>
+<ol>
+<li>Update to the latest version: <code>git pull</code>.</li>
+<li>Reproduce with <code>py infostealer_audit.py --no-online --no-tools</code> to<br />
+   eliminate network/installer variables.</li>
+<li>Open an issue using the bug-report template in<br />
+<a href="../.github/ISSUE_TEMPLATE/bug_report.md">.github/ISSUE_TEMPLATE/bug_report.md</a>.</li>
+<li>Include OS version, Python version, browser version, exact command<br />
+   line, full console output (redact passwords).</li>
+</ol>
+  </div>
+  <nav class="page-nav"><a href="FAQ.html"><span class="nav-dir">← Previous</span><span class="nav-title">FAQ</span></a><a href="Threat-Model.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">Threat Model</span></a></nav>
+</main>
+</body>
+</html>

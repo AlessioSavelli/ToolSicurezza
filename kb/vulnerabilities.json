@@ -1,0 +1,708 @@
+{
+  "_meta": {
+    "schema_version": "1.1",
+    "last_updated": "2026-05-20",
+    "kb_note": "v1.1.1: decrypt_difficulty downgraded from VERY_HARD to HARD for Chrome 131+ following VoidStealer v2.0 public research (2025-06). VERY_HARD reserved for future post-DBSC milestones.",
+    "current_chrome_stable": "148",
+    "current_chrome_stable_date": "2026-05-05",
+    "current_firefox_stable": "150",
+    "current_firefox_stable_date": "2026-05-12",
+    "current_edge_stable": "148",
+    "sources": [
+      "https://chromereleases.googleblog.com/",
+      "https://github.com/xaitax/Chrome-App-Bound-Encryption-Decryption",
+      "https://github.com/lclevy/firepwd",
+      "https://blog.cybereason.com/research/cookies-without-borders-bypassing-chromes-new-cookie-encryption-system",
+      "https://www.bleepingcomputer.com/news/security/new-tool-bypasses-google-chromes-new-cookie-encryption-system/",
+      "https://spycloud.com/blog/infostealers-bypass-new-chrome-security-feature/",
+      "https://securityaffairs.com/171034/malware/glove-stealer-bypasses-chromes-app-bound-encryption.html",
+      "https://medium.com/@ogcyberfischer/breaking-through-chromium-protections-bc641cc76477",
+      "https://cybersecuritynews.com/new-voidstealer-variant-bypasses-chrome-abe/",
+      "https://www.csoonline.com/article/4148601/chrome-abe-bypass-discovered-new-voidstealer-malware-steals-passwords-and-cookies.html",
+      "https://www.bleepingcomputer.com/news/security/the-silent-storm-new-infostealer-hijacks-sessions-decrypts-server-side/",
+      "https://www.bleepingcomputer.com/news/security/inside-the-remus-infostealer-session-theft-maas-and-rapid-evolution/",
+      "https://www.zero-day.cz/database/",
+      "https://socprime.com/blog/cve-2026-3910-vulnerability/",
+      "https://www.darknet.org.uk/2026/03/dumpbrowsersecrets-browser-credential-harvesting-with-app-bound-encryption-bypass/"
+    ],
+    "disclaimer": "Dati raccolti da pubblicazioni di security research pubbliche. Le date sono approssimate alla release stabile. La presenza di un bypass pubblico NON significa che il PC sia infetto: significa che esiste una tecnica nota che un infostealer potrebbe usare."
+  },
+
+  "chromium_abe_timeline": [
+    {
+      "version_range": "< 127",
+      "label": "Pre-ABE era (Chrome legacy)",
+      "abe_status": "NO_ABE",
+      "decrypt_difficulty": "TRIVIAL",
+      "description": "Nessuna App-Bound Encryption. Password e cookie cifrati con AES-GCM e chiave master DPAPI user-context. Qualsiasi processo user-mode che gira come l'utente puo' decifrare in pochi secondi.",
+      "applicable_bypasses": ["v10-direct-dpapi"],
+      "fix": {
+        "fixed_in": "127.0.0.0",
+        "fixed_date": "2024-07-23",
+        "milestone": "ABE introduction"
+      }
+    },
+    {
+      "version_range": "127.0 - 127.x",
+      "label": "ABE introduction (Chrome 127)",
+      "abe_status": "ABE_V1",
+      "decrypt_difficulty": "MEDIUM",
+      "description": "Prima release di App-Bound Encryption. Path validation IElevator basilare: COM service controlla che il caller giri da %PROGRAMFILES%\\Google\\Chrome\\... ma il check e' bypassabile in vari modi.",
+      "applicable_bypasses": [
+        "com-elevator-path-bypass",
+        "com-hijacking",
+        "rundll32-from-program-files"
+      ],
+      "released_date": "2024-07-23",
+      "first_public_bypass_date": "2024-09-12",
+      "time_to_first_bypass_days": 51,
+      "fix": {
+        "fixed_in": "128+",
+        "milestone": "Path validation hardening (parziale)"
+      }
+    },
+    {
+      "version_range": "128 - 130",
+      "label": "ABE early hardening",
+      "abe_status": "ABE_V1_HARDENED",
+      "decrypt_difficulty": "MEDIUM",
+      "description": "Path validation rafforzata, ma ancora vulnerabile a DLL injection in chrome.exe e a tecniche di reflective process hollowing. Molti infostealer commerciali (Phemedrone, LummaC2, Meduza, Vidar, StealC, Rhadamanthys, WhiteSnake, Meta, Lumar, Glove Stealer) hanno aggiornato i loro moduli in questo periodo.",
+      "applicable_bypasses": [
+        "dll-injection-chrome-exe",
+        "reflective-process-hollowing",
+        "com-elevator-with-trusted-path",
+        "early-bird-apc-injection",
+        "remote-debugging-port"
+      ],
+      "released_date": "2024-08-20",
+      "fix": {
+        "fixed_in": "131+",
+        "milestone": "Inner AES wrapping introduced (Strato 3)"
+      }
+    },
+    {
+      "version_range": "131 - 135",
+      "label": "Inner AES wrapping (Strato 3)",
+      "abe_status": "ABE_V2",
+      "decrypt_difficulty": "HARD",
+      "description": "Aggiunto strato finale di AES con constant key hardcoded in chrome.dll. Anche con privilegi SYSTEM + dual DPAPI unwrapping, la chiave reale resta wrapped. Bypass richiede signature scanning di chrome.dll (la constant cambia ad ogni release) o injection nel processo Chrome stesso. NOTA: VoidStealer v2.0 (2025-06) dimostra che il bypass e' possibile in user-mode senza elevation tramite debugger-attach + hardware breakpoints — requisito: il browser deve essere in esecuzione al momento dell'attacco.",
+      "applicable_bypasses": [
+        "chrome-dll-signature-scanning",
+        "dll-injection-chrome-exe",
+        "reflective-process-hollowing",
+        "debugger-attach-voidstealer"
+      ],
+      "released_date": "2024-11-12",
+      "fix": {
+        "fixed_in": "136+",
+        "milestone": "Remote debugging port restriction"
+      }
+    },
+    {
+      "version_range": "136 - 143",
+      "label": "Remote debugging restriction",
+      "abe_status": "ABE_V2_PLUS",
+      "decrypt_difficulty": "HARD",
+      "description": "Restrizione sull'uso di --remote-debugging-port: ora richiede --user-data-dir esplicito diverso dal profilo default. Chiude il vettore remote-debugging ma NON il debugger-attach nativo (DebugActiveProcess). NOTA: VoidStealer v2.0 (2025-06) bypassa anche questo strato in user-mode senza elevation — requisito: il browser deve essere in esecuzione al momento dell'attacco.",
+      "applicable_bypasses": [
+        "chrome-dll-signature-scanning",
+        "dll-injection-chrome-exe",
+        "reflective-process-hollowing",
+        "debugger-attach-voidstealer"
+      ],
+      "released_date": "2025-04-29",
+      "fix": {
+        "fixed_in": "144+",
+        "milestone": "IElevator2 with Mojo IPC"
+      }
+    },
+    {
+      "version_range": "144 - 147",
+      "label": "IElevator2 (Mojo IPC)",
+      "abe_status": "ABE_V3",
+      "decrypt_difficulty": "HARD",
+      "description": "Introduzione IElevator2 COM interface con metodi RunIsolatedChrome e AcceptInvitation basati su Mojo IPC. Endpoint COM piu' difficili da invocare da processi non-Chrome. Path validation ulteriormente irrigidita. NOTA: VoidStealer v2.0 (2025-06) dimostra che il bypass e' comunque raggiungibile in user-mode senza elevation tramite debugger-attach + hardware breakpoints (DebugActiveProcess/DR0/DR7) — requisito: il browser deve essere in esecuzione al momento dell'attacco.",
+      "applicable_bypasses": [
+        "chrome-dll-signature-scanning",
+        "dll-injection-chrome-exe",
+        "debugger-attach-voidstealer"
+      ],
+      "released_date": "2026-02-10",
+      "fix": {
+        "fixed_in": "148+ / future DBSC",
+        "milestone": "DBSC migration in progress"
+      }
+    },
+    {
+      "version_range": ">= 148",
+      "label": "Current stable + DBSC transition",
+      "abe_status": "ABE_V3_DBSC",
+      "decrypt_difficulty": "HARD",
+      "description": "Chrome in transizione verso DBSC (Device Bound Session Credentials): le sessioni saranno bound a una chiave crittografica device-specific. La password resta protetta da v20 ABE Strato 3; le sessioni cookie migreranno su TPM/secure enclave con il rollout completo. Attuale livello di protezione alto ma non inviolabile. NOTA: VoidStealer v2.0 (2025-06) dimostra bypass user-mode senza elevation via debugger-attach + hardware breakpoints — requisito: il browser deve essere in esecuzione al momento dell'attacco. Con browser chiuso la protezione regge.",
+      "applicable_bypasses": [
+        "debugger-attach-voidstealer",
+        "dll-injection-chrome-exe (sempre piu' difficile)",
+        "kernel-level-exploit (richiede 0-day)"
+      ],
+      "released_date": "2026-05-05",
+      "fix": {
+        "fixed_in": "N/A (current stable)",
+        "milestone": "DBSC rollout"
+      }
+    }
+  ],
+
+  "bypass_techniques": {
+    "v10-direct-dpapi": {
+      "name": "v10 direct DPAPI",
+      "complexity": "TRIVIAL",
+      "requires_admin": false,
+      "requires_system": false,
+      "description": "Direct AES-GCM decrypt usando user-DPAPI master key. Pre-Chrome 127 era l'unico schema. Ancora attivo per password salvate prima dell'upgrade a 127.",
+      "used_by": ["RedLine", "Vidar", "AZORult", "Raccoon", "tutti gli infostealer pre-2024"],
+      "detection": "Login Data blob inizia con 'v10'"
+    },
+    "com-elevator-path-bypass": {
+      "name": "COM IElevator path validation bypass",
+      "complexity": "MEDIUM",
+      "requires_admin": false,
+      "requires_system": false,
+      "description": "Spawn processo da path che soddisfa la validation di IElevator (es. crea cartella con 'Chrome' nel nome, COM hijacking).",
+      "used_by": ["xaitax/Chrome-App-Bound-Encryption-Decryption (POC pubblica)", "WhiteSnake stealer"],
+      "detection": "Difficile - tecnica fileless",
+      "ref": "https://github.com/xaitax/Chrome-App-Bound-Encryption-Decryption"
+    },
+    "dll-injection-chrome-exe": {
+      "name": "DLL injection in chrome.exe",
+      "complexity": "HIGH",
+      "requires_admin": false,
+      "requires_system": false,
+      "description": "Iniettare codice in chrome.exe per ottenere accesso alle chiavi master in memoria. Bypassa tutti gli strati perche' il codice gira dentro Chrome.",
+      "used_by": ["Glove Stealer", "Lumma C2", "alcuni Vidar fork", "Phemedrone"],
+      "detection": "Defender 1116/1117 per behavioral, ETW per call patterns",
+      "ref": "https://www.darkreading.com/endpoint-security/yet-another-way-bypass-google-chromes-encryption-protection"
+    },
+    "reflective-process-hollowing": {
+      "name": "Direct syscall reflective process hollowing",
+      "complexity": "VERY_HIGH",
+      "requires_admin": false,
+      "requires_system": false,
+      "description": "Hollow un processo legittimo (es. svchost) e iniettare codice che si fa passare per Chrome. Bypassa la maggior parte degli EDR perche' usa syscall diretti.",
+      "used_by": ["xaitax v0.7+ POC", "alcuni Lumma builder commerciali"],
+      "detection": "EDR di alta fascia (CrowdStrike, SentinelOne) - difficile per Defender",
+      "ref": "https://github.com/xaitax/Chrome-App-Bound-Encryption-Decryption"
+    },
+    "early-bird-apc-injection": {
+      "name": "Early Bird APC injection",
+      "complexity": "HIGH",
+      "requires_admin": false,
+      "requires_system": false,
+      "description": "Inietta in processo prima del main entry point via APC queue. Tecnica usata da DumpBrowserSecrets.",
+      "used_by": ["DumpBrowserSecrets", "alcuni MaaS stealer"],
+      "detection": "ETW Process callbacks, AMSI",
+      "ref": "https://www.darknet.org.uk/2026/03/dumpbrowsersecrets-browser-credential-harvesting-with-app-bound-encryption-bypass/"
+    },
+    "debugger-attach-voidstealer": {
+      "name": "Debugger attach + hardware breakpoint (VoidStealer v2.0 technique)",
+      "complexity": "HIGH",
+      "requires_admin": false,
+      "requires_system": false,
+      "description": "Spawn chrome.exe come processo sospeso (CreateProcessW con flag HIDDEN+SUSPENDED), poi DebugActiveProcess() senza code injection. WaitForDebugEvent monitora il caricamento di chrome.dll/msedge.dll. Hardware breakpoint DR0/DR7 sul punto in cui v20_master_key e' plaintext in memoria (localizzato tramite stringa 'OSCrypt.AppBoundProvider.Decrypt.ResultCode'). ReadProcessMemory estrae la chiave via R15 (Chrome) / R14 (Edge). NON richiede elevation, NON richiede injection — detection footprint molto basso. Basato su tecnica ElevationKatz. VoidStealer v1.x usava variante con admin; v2.0 (2026-03-13) ha eliminato il requisito di privilegio. REQUISITO OPERATIVO: il browser deve essere in esecuzione (o avviabile) al momento dell'attacco; con browser non installato / utente disconnesso la tecnica non si applica.",
+      "used_by": ["VoidStealer 1.x (requires admin)", "VoidStealer 2.0+ (user-level, no injection)", "ElevationKatz (POC base)"],
+      "detection": "Process creation flags (DEBUG_PROCESS) visibili in ETW/NtDebugActiveProcess; Defender behavioral puo' rilevare il pattern di spawn+debug. Difficile da rilevare per AV tradizionali perche' usa solo API standard Windows.",
+      "ref": "https://cybersecuritynews.com/new-voidstealer-variant-bypasses-chrome-abe/",
+      "fixed_in_chrome": "Non ancora mitigato (efficace su Chrome 148)"
+    },
+    "chrome-dll-signature-scanning": {
+      "name": "chrome.dll constant key extraction (Strato 3 bypass)",
+      "complexity": "VERY_HIGH",
+      "requires_admin": false,
+      "requires_system": true,
+      "description": "Pattern-scan chrome.dll per estrarre la constant AES key usata nel wrapping finale (Strato 3, Chrome 131+). Pattern cambiano ad ogni release di Chrome, signature DB va aggiornato continuamente.",
+      "used_by": ["Lumma Pro 2025", "Stealc V2"],
+      "detection": "File access pattern (lettura chrome.dll), YARA su signature noti"
+    },
+    "remote-debugging-port": {
+      "name": "--remote-debugging-port abuse",
+      "complexity": "LOW",
+      "requires_admin": false,
+      "requires_system": false,
+      "description": "Lanciare Chrome con --remote-debugging-port=N per esporre DevTools Protocol, poi usare CDP per estrarre cookie/password. MITIGATO in Chrome 136+ (richiede --user-data-dir esplicito diverso dal default).",
+      "used_by": ["Tool legittimi (puppeteer, playwright)", "alcuni stealer pre-Chrome-136"],
+      "detection": "Chrome avviato con flag inusuale",
+      "fixed_in_chrome": "136"
+    },
+    "server-side-exfil-decrypt": {
+      "name": "Server-side decryption (encrypted blob exfiltration)",
+      "complexity": "MEDIUM",
+      "requires_admin": false,
+      "requires_system": false,
+      "description": "Invece di decifrare localmente (che richiede bypass ABE), il malware esfiltra il blob cifrato direttamente ai server C2 dell'attaccante dove viene decifrato con chiavi e infrastruttura remota. Aggira completamente il problema dei bypass locali. Tecnica usata da Storm (2026): dati Chromium + Gecko esportati cifrati, poi decrittati server-side. Molto difficile da mitigare lato ABE.",
+      "used_by": ["Storm infostealer (2026)"],
+      "detection": "Traffico di rete anomalo in uscita (file .db / .json di Chrome inviati a IP esterni), DLP, SIEM. La tecnica bypassa le protezioni locali ma crea traffico di rete rilevabile.",
+      "ref": "https://www.bleepingcomputer.com/news/security/the-silent-storm-new-infostealer-hijacks-sessions-decrypts-server-side/"
+    }
+  },
+
+  "browsers": {
+    "Chrome": {
+      "vendor": "Google",
+      "engine": "Chromium",
+      "abe_enabled": true,
+      "config_path": "%LOCALAPPDATA%\\Google\\Chrome\\User Data",
+      "version_registry": ["HKLM\\SOFTWARE\\Google\\Chrome\\BLBeacon", "HKCU\\Software\\Google\\Chrome\\BLBeacon"],
+      "version_binary": "%PROGRAMFILES%\\Google\\Chrome\\Application\\chrome.exe",
+      "current_stable": "148",
+      "release_cycle_weeks": 4,
+      "notes": "Ricevera' i fix DBSC in priorita' rispetto agli altri Chromium fork."
+    },
+    "Edge": {
+      "vendor": "Microsoft",
+      "engine": "Chromium",
+      "abe_enabled": true,
+      "config_path": "%LOCALAPPDATA%\\Microsoft\\Edge\\User Data",
+      "version_registry": ["HKLM\\SOFTWARE\\Microsoft\\EdgeUpdate\\Clients"],
+      "version_binary": "%PROGRAMFILES(x86)%\\Microsoft\\Edge\\Application\\msedge.exe",
+      "current_stable": "148",
+      "release_cycle_weeks": 4,
+      "notes": "Schema ABE simile a Chrome ma con CLSID IElevator diverso. Edge IElevator: {1FCBE96C-1697-43AF-9140-2897C7C69767}"
+    },
+    "Brave": {
+      "vendor": "Brave Software",
+      "engine": "Chromium",
+      "abe_enabled": true,
+      "config_path": "%LOCALAPPDATA%\\BraveSoftware\\Brave-Browser\\User Data",
+      "version_binary": "%PROGRAMFILES%\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+      "current_stable": "1.78 (Chromium 144 base)",
+      "notes": "Schema ABE identico a Chrome. CLSID: {576B31AF-6369-4B6B-8560-E4B203A97A8B}"
+    },
+    "Vivaldi": {
+      "vendor": "Vivaldi",
+      "engine": "Chromium",
+      "abe_enabled": true,
+      "config_path": "%LOCALAPPDATA%\\Vivaldi\\User Data",
+      "notes": "Spesso in ritardo di 1-2 versioni Chromium rispetto a Chrome stable."
+    },
+    "Opera": {
+      "vendor": "Opera Software",
+      "engine": "Chromium",
+      "abe_enabled": true,
+      "config_path": "%APPDATA%\\Opera Software\\Opera Stable",
+      "notes": "Schema ABE simile, CLSID e implementazione leggermente differenti."
+    },
+    "Firefox": {
+      "vendor": "Mozilla",
+      "engine": "Gecko",
+      "abe_enabled": false,
+      "abe_equivalent": "NSS password store (key4.db)",
+      "config_path": "%APPDATA%\\Mozilla\\Firefox\\Profiles",
+      "current_stable": "150",
+      "notes": "Firefox NON usa DPAPI ne' ABE. Usa NSS database (key4.db SQLite) con chiave master derivata via PBKDF2. Default: nessuna 'master password' configurata = decifrabile in user-mode senza credenziali. Se l'utente ha impostato una master password (Settings > Privacy > Use a master password), la decifrazione richiede di indovinarla."
+    },
+    "Tor": {
+      "vendor": "Tor Project",
+      "engine": "Gecko (Firefox ESR fork)",
+      "abe_enabled": false,
+      "notes": "Tor Browser disabilita di default il save-password. Se attivato manualmente, schema NSS identico a Firefox."
+    }
+  },
+
+  "browser_cves": {
+    "_note": "CVE rilevanti per browser desktop — RCE, privilege escalation e furto credenziali. Fonte primaria: zero-day.cz/database + NVD + SOC Prime. Aggiornato 2026-05-20.",
+    "CVE-2026-5281": {
+      "product": "Chrome",
+      "component": "Dawn (WebGPU)",
+      "type": "Use-after-free",
+      "cvss": "8.8",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Use-after-free nel componente Dawn (WebGPU) di Chrome. Un attaccante remoto potrebbe eseguire codice arbitrario tramite una pagina web appositamente creata.",
+      "fixed_in": "TBD",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2026-3910": {
+      "product": "Chrome",
+      "component": "V8 JavaScript Engine",
+      "type": "Implementation flaw / type confusion",
+      "cvss": "8.8",
+      "severity": "HIGH",
+      "exploited_in_wild": true,
+      "description": "Flaw nell'implementazione di V8. Google ha confermato sfruttamento attivo in-the-wild. Permette RCE tramite pagina web malevola — vettore privilegiato per dropper di infostealer.",
+      "fixed_in": "Chrome 148+",
+      "source": "https://socprime.com/blog/cve-2026-3910-vulnerability/"
+    },
+    "CVE-2026-3909": {
+      "product": "Chrome",
+      "component": "Skia (2D graphics library)",
+      "type": "Out-of-bounds write",
+      "cvss": "8.8",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Out-of-bounds write nella libreria grafica Skia. Potenziale corruzione di memoria e RCE tramite contenuto web appositamente costruito.",
+      "fixed_in": "Chrome 148+",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2026-2441": {
+      "product": "Chrome",
+      "component": "CSS",
+      "type": "Use-after-free",
+      "cvss": "8.8",
+      "severity": "HIGH",
+      "exploited_in_wild": true,
+      "description": "Use-after-free nel componente CSS di Chrome. Google ha rilasciato patch di emergenza dopo conferma di sfruttamento attivo (febbraio 2026).",
+      "fixed_in": "Chrome 147.x (patch emergenza Feb 2026)",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2025-14174": {
+      "product": "Chrome",
+      "component": "ANGLE (OpenGL ES translation layer)",
+      "type": "Out-of-bounds memory access",
+      "cvss": "8.8",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Accesso out-of-bounds in ANGLE, lo strato di traduzione OpenGL ES usato da Chrome per il rendering GPU. Potenziale RCE da contenuto web.",
+      "fixed_in": "Chrome 136+",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2025-13223": {
+      "product": "Chrome",
+      "component": "V8 JavaScript Engine",
+      "type": "Type confusion",
+      "cvss": "7.5",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Type confusion in V8. Permette a un attaccante remoto di potenzialmente sfruttare la corruzione heap tramite una pagina HTML appositamente creata.",
+      "fixed_in": "Chrome 134+",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2025-10585": {
+      "product": "Chrome",
+      "component": "V8 JavaScript Engine",
+      "type": "Type confusion",
+      "cvss": "7.5",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Ulteriore type confusion in V8 che permette possibile esecuzione di codice arbitrario tramite una pagina web.",
+      "fixed_in": "Chrome 133+",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2025-6558": {
+      "product": "Chrome",
+      "component": "ANGLE / GPU",
+      "type": "Validation error",
+      "cvss": "7.0",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Errore di validazione nel sottosistema ANGLE/GPU che potrebbe portare a corruzione di memoria.",
+      "fixed_in": "Chrome 137+",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2025-6554": {
+      "product": "Chrome",
+      "component": "V8 JavaScript Engine",
+      "type": "Type confusion",
+      "cvss": "7.5",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Type confusion in V8. Potenziale heap corruption e RCE da renderer compromesso.",
+      "fixed_in": "Chrome 137+",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2025-5419": {
+      "product": "Chrome",
+      "component": "V8 JavaScript Engine",
+      "type": "Out-of-bounds read/write",
+      "cvss": "8.1",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Errore di boundary in V8. Un attaccante remoto potrebbe eseguire codice arbitrario o causare denial of service.",
+      "fixed_in": "Chrome 136+",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2026-21513": {
+      "product": "Windows MSHTML",
+      "component": "MSHTML / Trident",
+      "type": "Protection bypass",
+      "cvss": "7.5",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Bypass delle protezioni di sicurezza in MSHTML (Internet Explorer engine ancora presente in Windows per compatibilita'). Utilizzabile come vettore di distribuzione per infostealer via file Office o shortcut .url.",
+      "fixed_in": "Patch Tuesday 2026",
+      "source": "https://www.zero-day.cz/database/"
+    },
+    "CVE-2025-33053": {
+      "product": "Windows MSHTML",
+      "component": "MSHTML / WebDAV",
+      "type": "Path control",
+      "cvss": "7.5",
+      "severity": "HIGH",
+      "exploited_in_wild": false,
+      "description": "Controllo path arbitrario via MSHTML + WebDAV. Puo' essere usato per caricare DLL da UNC path remoti — tecnica utilizzata da Phemedrone Stealer e altri per distribuzione fileless.",
+      "fixed_in": "Patch Tuesday 2025-Q2",
+      "source": "https://www.zero-day.cz/database/"
+    }
+  },
+
+  "known_infostealers": {
+    "_note": "Mappa infostealer noti -> tecniche e versioni Chrome target. Dati da public research (BlackFog, BleepingComputer, Cybereason, BlackBerry Research, Group-IB, Flare, Cyble). NB: questo tool NON contiene/scarica binari malware, solo indicatori difensivi.",
+    "RedLine": {
+      "first_seen": "2020-03",
+      "ttp_summary": "MaaS infostealer (~$200/mese su forum underground). Modulo v20-aware aggiunto in 'RedLine Pro' (Q4 2024).",
+      "browser_targets": ["Chrome", "Edge", "Brave", "Opera", "Yandex", "Firefox"],
+      "abe_bypass": "DLL injection + chrome.dll signature scanning",
+      "max_chrome_supported_by_basic_variant": "126",
+      "ref": "https://www.bleepingcomputer.com/news/security/redline-malware/"
+    },
+    "Lumma C2": {
+      "first_seen": "2022-08",
+      "ttp_summary": "MaaS molto attivo 2024-2025. Bypass v20 via dual-injection (Cybereason 2024). Aggiornamenti settimanali.",
+      "browser_targets": ["Chrome", "Edge", "Brave", "Vivaldi", "Opera", "Firefox", "Tor"],
+      "abe_bypass": "Dual injection + COM IElevator (early variants) / chrome.dll scan",
+      "max_chrome_supported": "current",
+      "ref": "https://cyble.com/blog/dual-injection-undermines-chromes-encryption/"
+    },
+    "Vidar": {
+      "first_seen": "2018-12",
+      "ttp_summary": "Fork di Arkei. Long-lived MaaS. Modulo v20 aggiornato Q1 2025.",
+      "browser_targets": ["Chrome", "Edge", "Brave", "Firefox", "Pale Moon"],
+      "abe_bypass": "Process hollowing + DPAPI",
+      "max_chrome_supported": "current",
+      "ref": "https://www.malwarebytes.com/blog/threat-intelligence/2024/vidar"
+    },
+    "Phemedrone": {
+      "first_seen": "2024-01",
+      "ttp_summary": "Open source Telegram-based stealer. Distribuito via SmartScreen bypass (CVE-2023-36025).",
+      "browser_targets": ["Chrome", "Edge", "Firefox"],
+      "abe_bypass": "DLL injection",
+      "max_chrome_supported_basic": "127",
+      "ref": "https://www.trendmicro.com/en_us/research/24/a/cve-2023-36025-phemedrone.html"
+    },
+    "WhiteSnake": {
+      "first_seen": "2023-01",
+      "ttp_summary": "Tra i primi a bypassare v20 ABE via COM Elevator path. Russian-language forums.",
+      "browser_targets": ["Chrome", "Edge", "Brave", "Opera", "Firefox"],
+      "abe_bypass": "COM IElevator path validation bypass",
+      "ref": "https://spycloud.com/blog/infostealers-bypass-new-chrome-security-feature/"
+    },
+    "Meduza": {
+      "first_seen": "2023-06",
+      "ttp_summary": "Stealer multi-piattaforma con build modulare. v20 supportato da 2024-Q3.",
+      "browser_targets": ["Chrome", "Edge", "Brave", "Firefox", "Opera", "+19 chromium variants"],
+      "abe_bypass": "DLL injection",
+      "ref": "https://www.uptycs.com/blog/meduza-stealer"
+    },
+    "StealC": {
+      "first_seen": "2023-02",
+      "ttp_summary": "MaaS economico. StealC V2 (2025) aggiunge supporto MetaMask IndexedDB e Perplexity Comet.",
+      "browser_targets": ["Chrome", "Edge", "Brave", "Firefox", "Opera"],
+      "abe_bypass": "Process hollowing + DPAPI",
+      "ref": "https://foresiet.com/blog/stealc-infostealer-operations-and-threat-landscape/"
+    },
+    "Rhadamanthys": {
+      "first_seen": "2022-09",
+      "ttp_summary": "Modular stealer + loader. v20 modulo da 2024-Q4.",
+      "browser_targets": ["Chrome", "Edge", "Firefox", "Opera"],
+      "abe_bypass": "DLL injection",
+      "ref": "https://www.checkpoint.com/research/rhadamanthys/"
+    },
+    "Meta Stealer": {
+      "first_seen": "2022-03",
+      "ttp_summary": "Fork RedLine. Limitato a Chrome <127 senza bypass v20 in basic variant.",
+      "browser_targets": ["Chrome", "Edge", "Firefox"],
+      "abe_bypass": "Solo v10 (Chrome <127). Pro variant da 2025-Q1",
+      "max_chrome_supported_basic": "126"
+    },
+    "Lumar (Lumma fork)": {
+      "first_seen": "2023-06",
+      "ttp_summary": "Cheap variant. Lumma-derived. v20 support tardivo.",
+      "browser_targets": ["Chrome", "Edge", "Firefox"],
+      "abe_bypass": "DPAPI legacy + parzialmente v10",
+      "max_chrome_supported": "126 (basic), 137 (pro)"
+    },
+    "Glove Stealer": {
+      "first_seen": "2024-09",
+      "ttp_summary": "Primo stealer ad annunciare pubblicamente bypass v20. Russian-speaking.",
+      "browser_targets": ["Chrome", "Edge", "Brave"],
+      "abe_bypass": "DLL injection in chrome.exe",
+      "ref": "https://securityaffairs.com/171034/malware/glove-stealer-bypasses-chromes-app-bound-encryption.html"
+    },
+    "VoidStealer": {
+      "first_seen": "2025-12",
+      "ttp_summary": "MaaS emerso su HackForums a meta' dicembre 2025. v2.0 (2026-03-13) introduce bypass ABE tramite debugger attach SENZA code injection e SENZA privilege escalation — tecnica basata su ElevationKatz. v2.1 rilasciato 2026-03-18. Attualmente il bypass ABE piu' stealth per Chrome/Edge disponibile pubblicamente.",
+      "browser_targets": ["Chrome", "Edge"],
+      "abe_bypass": "debugger-attach-voidstealer (v1.x: richiede admin; v2.0+: user-level, no injection)",
+      "bypass_technique_detail": "CreateProcessW sospeso -> DebugActiveProcess -> WaitForDebugEvent per caricamento chrome.dll -> hardware breakpoint DR0/DR7 -> ReadProcessMemory al momento del plaintext -> chiave estratta da registro R15/R14",
+      "versions": {
+        "v1.x": {"release": "2025-12", "requires_admin": true, "bypass": "debugger attach (standard)"},
+        "v2.0": {"release": "2026-03-13", "requires_admin": false, "requires_injection": false, "bypass": "hardware breakpoint + debugger attach (ElevationKatz-based)"},
+        "v2.1": {"release": "2026-03-18", "requires_admin": false, "requires_injection": false, "bypass": "same as v2.0, improvements"}
+      },
+      "ref": "https://cybersecuritynews.com/new-voidstealer-variant-bypasses-chrome-abe/"
+    },
+    "Stealka": {
+      "first_seen": "2024",
+      "ttp_summary": "Distribuito via fake pirated software + game mods. Target 100+ browser variants, 115 wallet extensions.",
+      "browser_targets": ["Chrome", "Firefox", "Opera", "Yandex", "Edge", "Brave", "+100 variants"],
+      "abe_bypass": "DLL injection",
+      "ref": "https://www.kaspersky.com/blog/windows-stealer-stealka/55058/"
+    },
+    "Shuyal Stealer": {
+      "first_seen": "2025",
+      "ttp_summary": "19 browsers target. Telegram bot exfiltration. Discord token grabber incluso.",
+      "browser_targets": ["19 browsers (Chromium + Firefox forks)"],
+      "abe_bypass": "Process injection",
+      "ref": "https://www.pointwild.com/threat-intelligence/shuyal-stealer-advanced-infostealer-targeting-19-browsers/"
+    },
+    "Torg Grabber": {
+      "first_seen": "2025",
+      "ttp_summary": "25 Chromium + 8 Firefox variants. 728 wallet extensions target.",
+      "browser_targets": ["25 Chromium + 8 Firefox"],
+      "abe_bypass": "DLL injection",
+      "ref": "https://www.bleepingcomputer.com/news/security/new-torg-grabber-infostealer-malware-targets-728-crypto-wallets/"
+    },
+    "Arkanix": {
+      "first_seen": "2025-12",
+      "ttp_summary": "Self-spreading via Discord contatti.",
+      "browser_targets": ["Chrome", "Edge", "Firefox", "Brave"],
+      "abe_bypass": "DLL injection",
+      "ref": "https://www.gdatasoftware.com/blog/2025/12/38306-arkanix-stealer"
+    },
+    "Storm": {
+      "first_seen": "2026-01",
+      "ttp_summary": "MaaS avanzato emerso all'inizio del 2026. Tecnica distintiva: server-side decryption — invece di decifrare localmente (aggirando ABE), esfiltra i blob cifrati dei browser ai server C2 dove vengono decifrati. Supporta sia Chromium che browser Gecko (Firefox, Waterfox, Pale Moon). Pricing: $300 demo 7gg / $900/mese / $1.800/mese team (100 operatori).",
+      "browser_targets": ["Chrome", "Edge", "Brave", "Firefox", "Waterfox", "Pale Moon", "Opera"],
+      "abe_bypass": "server-side-exfil-decrypt (esfiltrazione blob cifrati + decifrazione remota)",
+      "additional_targets": ["Telegram", "Signal", "Discord", "crypto exchange (Coinbase, Binance, Blockchain.com)", "autofill card data", "documenti utente"],
+      "pricing_usd": {"demo_7days": 300, "monthly": 900, "team_monthly": 1800},
+      "ref": "https://www.bleepingcomputer.com/news/security/the-silent-storm-new-infostealer-hijacks-sessions-decrypts-server-side/"
+    },
+    "REMUS": {
+      "first_seen": "2026-02",
+      "ttp_summary": "MaaS emergente analizzato da Flare (128 post underground feb-mag 2026). Similarita' con Lumma Stealer. Ciclo di sviluppo aggressivo con aggiornamenti frequenti. Enfatizza 'session continuity': non ruba solo credenziali ma mantiene sessioni autenticate attive. Aprile 2026: aggiunto furto IndexedDB per password manager (Bitwarden, 1Password, LastPass).",
+      "browser_targets": ["Chrome", "Edge", "Firefox", "Brave"],
+      "abe_bypass": "Browser credential bypass (tecnica non specificata pubblicamente, similare a Lumma)",
+      "additional_targets": ["Discord", "Steam", "Riot Games", "Telegram", "Bitwarden IndexedDB", "1Password IndexedDB", "LastPass IndexedDB"],
+      "special_capabilities": ["Anti-VM checks", "Session cookie collection + proxy-assisted restoration", "IndexedDB password manager harvesting (da Apr 2026)"],
+      "ref": "https://www.bleepingcomputer.com/news/security/inside-the-remus-infostealer-session-theft-maas-and-rapid-evolution/"
+    },
+    "Shai-Hulud": {
+      "first_seen": "2026",
+      "ttp_summary": "Codice sorgente trapelato da forum underground, poi usato in campagne malicious npm. Distribuzione via pacchetti npm compromessi nell'indice Node Package Manager. Target sviluppatori JavaScript/Node.js.",
+      "browser_targets": ["Chrome", "Edge", "Firefox"],
+      "abe_bypass": "Non documentato pubblicamente",
+      "distribution": ["npm package poisoning", "supply chain attack"],
+      "ref": "https://www.bleepingcomputer.com/news/security/leaked-shai-hulud-malware-fuels-new-npm-infostealer-campaign/"
+    },
+    "PennyWise": {
+      "first_seen": "2026",
+      "ttp_summary": "Stealer emergente distribuito via YouTube (video con link download). Multipli sample in the wild. Target wallet crypto e browser credential. Nome derivato dal personaggio di IT (Stephen King).",
+      "browser_targets": ["Chrome", "Edge", "Firefox", "Brave"],
+      "abe_bypass": "Non documentato pubblicamente",
+      "distribution": ["YouTube fake tutorials", "social engineering"],
+      "ref": "https://cyble.com/malware/infostealer/"
+    }
+  },
+
+  "infostealer_targets": {
+    "browser_passwords": {
+      "label": "Browser saved passwords",
+      "value_for_attacker": "CRITICAL",
+      "description": "Le password salvate sono il bersaglio primario. Una password riutilizzata = N siti compromessi."
+    },
+    "browser_cookies": {
+      "label": "Browser session cookies",
+      "value_for_attacker": "CRITICAL",
+      "description": "Cookie di sessione bypassano 2FA e password. Un'esfiltrazione di cookie Discord/Google/Microsoft = login immediato senza credenziali. Spesso piu' preziosi delle password stesse."
+    },
+    "autofill_creditcard": {
+      "label": "Autofill credit cards",
+      "value_for_attacker": "HIGH",
+      "description": "Chrome salva carte di credito (numero, intestatario, scadenza) cifrate con stesso schema delle password. CVV NON salvato."
+    },
+    "autofill_addresses": {
+      "label": "Autofill addresses",
+      "value_for_attacker": "LOW",
+      "description": "Indirizzi di fatturazione/spedizione. Utili per social engineering."
+    },
+    "discord_token": {
+      "label": "Discord token",
+      "value_for_attacker": "HIGH",
+      "description": "Token API Discord = login completo (skip 2FA). Trovato in %APPDATA%\\discord\\Local Storage\\leveldb\\*.ldb e *.log. Cifrato AES-GCM con master key DPAPI."
+    },
+    "steam_loginusers": {
+      "label": "Steam loginusers.vdf",
+      "value_for_attacker": "HIGH",
+      "description": "Steam mantiene un autologin token cifrato in C:\\Program Files (x86)\\Steam\\config\\loginusers.vdf. Permette login alla GUI Steam. Ruba account + library + skin."
+    },
+    "crypto_wallet_extensions": {
+      "label": "Crypto wallet browser extensions",
+      "value_for_attacker": "CRITICAL",
+      "description": "MetaMask, Phantom, TrustWallet, Coinbase, Binance, Exodus, ecc. Estensioni Chromium hanno data in %LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Local Extension Settings\\<extID>\\. Seed phrase + private keys spesso cifrati con password debole.",
+      "known_extension_ids": {
+        "nkbihfbeogaeaoehlefnkodbefgpgknn": "MetaMask",
+        "bfnaelmomeimhlpmgjnjophhpkkoljpa": "Phantom",
+        "egjidjbpglichdcondbcbdnbeeppgdph": "Trust Wallet",
+        "hnfanknocfeofbddgcijnmhnfnkdnaad": "Coinbase Wallet",
+        "fhbohimaelbohpjbbldcngcnapndodjp": "Binance Wallet",
+        "ejbalbakoplchlghecdalmeeeajnimhm": "MetaMask (alt)",
+        "ibnejdfjmmkpcnlpebklmnkoeoihofec": "TronLink",
+        "fhilaheimglignddkjgofkcbgekhenbh": "Oxygen / Atomic",
+        "fnnegphlobjdpkhecapkijjdkgcjhkib": "Harmony",
+        "nphplpgoakhhjchkkhmiggakijnkhfnd": "TON Wallet",
+        "ojggmchlghnjlapmfbnjholfjkiidbch": "Venom",
+        "aiifbnbfobpmeekipheeijimdpnlpgpp": "Station Wallet (Terra)",
+        "amkmjjmmflddogmhpjloimipbofnfjih": "Wombat",
+        "nlbmnnijcnlegkjjpcfjclmcfggfefdm": "MEW CX",
+        "dmkamcknogkgcdfhhbddcghachkejeap": "Keplr",
+        "acmacodkjbdgmoleebolmdjonilkdbch": "Rabby Wallet",
+        "opcgpfmipidbgpenhmajoajpbobppdil": "Sui Wallet",
+        "fhmfendgdocmcbmfikdcogofphimnkno": "Sollet",
+        "klnaejjgbibmhlephnhpmaofohgkpgkd": "ZilPay",
+        "lpfcbjknijpeeillifnkikgncikgfhdo": "Nami (Cardano)",
+        "kkpllkodjeloidieedojogacfhpaihoh": "Enkrypt",
+        "djclckkglechooblngghdinmeemkbgci": "OKX Wallet"
+      }
+    },
+    "password_manager_indexeddb": {
+      "label": "Browser-based password manager IndexedDB",
+      "value_for_attacker": "CRITICAL",
+      "description": "Estensioni browser di password manager (Bitwarden, 1Password, LastPass) mantengono cache locale cifrata in IndexedDB (%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\IndexedDB\\). REMUS (2026-04) e altri stealer moderni hanno aggiunto moduli per estrarre questi dati. La vault cifrata puo' essere attaccata offline con brute force se la master password e' debole.",
+      "targets": ["Bitwarden extension", "1Password extension", "LastPass extension", "Dashlane extension"]
+    },
+    "windows_credential_manager": {
+      "label": "Windows Credential Manager",
+      "value_for_attacker": "MEDIUM",
+      "description": "Credenziali generiche/web salvate in Windows Credential Manager (Outlook, RDP, network shares, Git). Cifrate DPAPI user-context = decifrabili da user-mode."
+    },
+    "ssh_keys": {
+      "label": "SSH private keys",
+      "value_for_attacker": "HIGH",
+      "description": "%USERPROFILE%\\.ssh\\id_rsa, id_ed25519, ecc. Spesso non cifrati con passphrase. Accesso immediato a server, GitHub, ecc."
+    },
+    "gpg_keys": {
+      "label": "GPG keyring",
+      "value_for_attacker": "MEDIUM",
+      "description": "%APPDATA%\\gnupg\\. Firme codice, decifratura email."
+    },
+    "telegram_session": {
+      "label": "Telegram desktop session",
+      "value_for_attacker": "HIGH",
+      "description": "%APPDATA%\\Telegram Desktop\\tdata\\ contiene session token che permette login senza credenziali."
+    },
+    "messaging_apps": {
+      "label": "Other messaging apps",
+      "value_for_attacker": "MEDIUM",
+      "description": "Slack, Teams, Signal, WhatsApp Desktop. Session token + chat history potenzialmente."
+    },
+    "filezilla_filezilla_xml": {
+      "label": "FileZilla saved sites",
+      "value_for_attacker": "HIGH",
+      "description": "%APPDATA%\\FileZilla\\sitemanager.xml puo' contenere FTP credentials in chiaro (storica vulnerabilita' di FileZilla)."
+    },
+    "vpn_configs": {
+      "label": "VPN client configs",
+      "value_for_attacker": "MEDIUM",
+      "description": "OpenVPN .ovpn con embedded credentials, WireGuard configs, ProtonVPN saved logins."
+    }
+  }
+}

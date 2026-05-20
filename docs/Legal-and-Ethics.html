@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Legal & Ethics — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html" class="active">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Reference<span>›</span>Legal & Ethics</div>
+  <div id="content">
+<h1 id="legal-and-ethics">Legal and Ethics</h1>
+<p>This page expands on the legal framing of<br />
+<a href="../DISCLAIMER.md"><code>DISCLAIMER.md</code></a> and provides context for users<br />
+operating in different jurisdictions.</p>
+<blockquote>
+<p>⚠️ This page is <strong>not legal advice</strong>. If you have specific concerns<br />
+about your intended use, consult a qualified lawyer in your<br />
+jurisdiction.</p>
+</blockquote>
+<h2 id="the-european-union-dual-use-regulation">The European Union dual-use regulation</h2>
+<p>Regulation (EU) 2021/821 governs the export of dual-use items,<br />
+including some "cyber-surveillance items". This project is designed to<br />
+fall <strong>outside</strong> the controlled categories because:</p>
+<ul>
+<li>It does not constitute an "intrusion software" within the meaning of<br />
+  the Wassenaar Arrangement and the related EU implementation. It does<br />
+  not modify the standard execution path of other software (it reads<br />
+  files the user already owns).</li>
+<li>It does not generate, deploy, or operate "command and control"<br />
+  infrastructure.</li>
+<li>It is offered openly as Free and Open Source Software (FOSS) under<br />
+  the <a href="../LICENSE">MIT license</a> for security-research and<br />
+  self-audit purposes.</li>
+</ul>
+<p>The applicable General Software Note (Note 3) of the EU Dual-Use<br />
+Regulation typically excludes from controls software that is "in the<br />
+public domain". This project is published under an OSI-approved<br />
+license and freely distributed, satisfying that condition.</p>
+<blockquote>
+<p>If you intend to use, modify, or redistribute this software in a<br />
+commercial context, or to export it to a country subject to specific<br />
+export controls, <strong>verify independently</strong> that no controls apply to<br />
+your situation.</p>
+</blockquote>
+<h2 id="the-eu-cyber-resilience-act-cra">The EU Cyber Resilience Act (CRA)</h2>
+<p>Regulation (EU) 2024/2847 introduces cybersecurity requirements for<br />
+products with digital elements. The CRA contains an explicit exemption<br />
+for <strong>free and open-source software</strong> "developed or supplied outside<br />
+the course of a commercial activity" (Article 2(11)).</p>
+<p>This project is community-developed, non-commercial, and FOSS. The CRA<br />
+obligations for "manufacturers" of products do not apply. However, as<br />
+the project grows, contributors should be aware that:</p>
+<ul>
+<li>If the project is integrated into a commercial product, the<br />
+  commercial integrator becomes the responsible "manufacturer".</li>
+<li>The project maintains responsible vulnerability disclosure practices<br />
+  (see <a href="../SECURITY.md">SECURITY.md</a>).</li>
+</ul>
+<h2 id="gdpr-regulation-eu-2016679">GDPR (Regulation EU 2016/679)</h2>
+<p>When you use this software on <strong>your own</strong> machine, the GDPR<br />
+implications are minimal:</p>
+<ul>
+<li>The data subject (you) is identical to the data controller (you).</li>
+<li>The processing is performed locally, with no cross-border transfer.</li>
+<li>The lawful basis under Article 6(1)(a) — consent — is implicitly<br />
+  given by invoking the tool on your own data.</li>
+</ul>
+<p><strong>However</strong>, if your machine contains credentials of other natural<br />
+persons (family members, employees, friends who used your computer),<br />
+and you decrypt those credentials, you are processing their personal<br />
+data. In that case:</p>
+<ul>
+<li>Have a lawful basis (consent of the data subject, or Article 6(1)(f)<br />
+  "legitimate interests" if you are e.g. a system administrator<br />
+  performing an incident-response audit).</li>
+<li>Do not retain the data longer than necessary.</li>
+<li>Do not disclose it to third parties without basis.</li>
+<li>Honour data-subject rights (access, erasure).</li>
+</ul>
+<p>The tool itself does <strong>not</strong> retain anything. The HTML/JSON reports<br />
+do. Delete them after use.</p>
+<h2 id="italian-penal-code-references">Italian penal code references</h2>
+<p>For users in Italy:</p>
+<h3 id="art-615-ter-cp-accesso-abusivo-ad-un-sistema-informatico-o-telematico">Art. 615-ter c.p. — <em>Accesso abusivo ad un sistema informatico o telematico</em></h3>
+<p>Punishes unauthorised access to a computer or telematic system. Using<br />
+this tool <strong>on your own system</strong> is <em>not</em> "abusivo" — you have legitimate<br />
+access by virtue of ownership. Using it on someone else's system<br />
+without consent <strong>is</strong> punishable.</p>
+<h3 id="art-615-quater-cp-detenzione-e-diffusione-abusiva-di-codici-di-accesso">Art. 615-quater c.p. — <em>Detenzione e diffusione abusiva di codici di accesso</em></h3>
+<p>Punishes the unauthorised holding or distribution of access codes<br />
+"obtained or used illegally". Holding the credentials this tool<br />
+decrypts on your own machine is <em>not</em> punishable — they are your own<br />
+credentials. Distributing decrypted reports containing third-party<br />
+credentials would be.</p>
+<h3 id="art-615-quinquies-cp-diffusione-di-apparecchiature-dispositivi-o-programmi-informatici-diretti-a-danneggiare-o-interrompere-un-sistema-informatico-o-telematico">Art. 615-quinquies c.p. — <em>Diffusione di apparecchiature, dispositivi o programmi informatici diretti a danneggiare o interrompere un sistema informatico o telematico</em></h3>
+<p>Punishes the distribution of programs designed to <em>damage</em> or <em>interrupt</em><br />
+computer systems. This tool does neither. It is a read-only audit tool.</p>
+<h3 id="art-617-quater-cp-intercettazione-impedimento-o-interruzione-illecita-di-comunicazioni-informatiche-o-telematiche">Art. 617-quater c.p. — <em>Intercettazione, impedimento o interruzione illecita di comunicazioni informatiche o telematiche</em></h3>
+<p>Punishes illegal interception of telematic communications. This tool<br />
+performs no network interception.</p>
+<h2 id="german-hackerparagraph-202c-stgb">German Hackerparagraph (§202c StGB)</h2>
+<p>Germany's §202c StGB criminalises the <em>production, acquisition,<br />
+distribution</em> of computer programs whose primary purpose is the<br />
+commission of certain hacking offences (§§202a, 202b, 303a, 303b).</p>
+<p>The "primary purpose" test means that dual-use tools designed for<br />
+defensive audit and security research are generally outside the scope.<br />
+This project is:</p>
+<ul>
+<li>Designed for self-audit (defensive).</li>
+<li>Released as FOSS with explicit disclaimer.</li>
+<li>Includes no exploits or malware samples.</li>
+<li>Documents bypass techniques only at a level necessary for understanding<br />
+  the protections, not at a level enabling weaponisation.</li>
+</ul>
+<p>Practical guidance for German users: the BSI (Federal Office for<br />
+Information Security) has clarified in multiple statements that<br />
+legitimate security research tools are protected, and the §202c<br />
+"Hackerparagraph" should not be read to criminalise security<br />
+professionals. However, <strong>never</strong> use such tools against systems for<br />
+which you do not have authorisation.</p>
+<h2 id="united-kingdom-computer-misuse-act-1990">United Kingdom Computer Misuse Act 1990</h2>
+<p>Sections 1-3 criminalise unauthorised access, unauthorised access with<br />
+intent, and unauthorised acts impairing the operation of a computer.<br />
+Self-audit on your own machine is authorised access by definition.<br />
+Third-party use without consent is not.</p>
+<h2 id="united-states-cfaa-18-usc-1030">United States CFAA (18 U.S.C. § 1030)</h2>
+<p>Same logic. Authorised use on your own systems is lawful. The<br />
+<em>Van Buren v. United States</em> (2021) Supreme Court decision narrowed<br />
+the scope of "exceeds authorised access", which generally helps<br />
+defensive researchers, but the underlying prohibition on <strong>unauthorised<br />
+access</strong> remains.</p>
+<h2 id="responsible-disclosure-general-principle">Responsible disclosure (general principle)</h2>
+<p>If you discover a vulnerability in third-party software while using<br />
+this tool (Chrome, Edge, Firefox, an infostealer family, a Windows<br />
+component):</p>
+<ol>
+<li>Report it privately to the vendor's security team.</li>
+<li>Allow a reasonable disclosure window (typically 90 days).</li>
+<li>Coordinate public disclosure with the vendor.</li>
+<li>Do not exploit the vulnerability in the wild during the disclosure<br />
+   window.</li>
+</ol>
+<p>See <a href="../SECURITY.md">SECURITY.md</a> for our own vulnerability disclosure<br />
+policy.</p>
+<h2 id="educational-use-safeguards">Educational use safeguards</h2>
+<p>If you are using this project in an educational setting (classroom,<br />
+training, CTF preparation):</p>
+<ul>
+<li>Run only on lab/training machines that the student owns or is<br />
+  authorised to use.</li>
+<li>Do not use captured credentials for any purpose other than the<br />
+  educational exercise.</li>
+<li>Make sure students understand the legal context (this page is a<br />
+  good starting point).</li>
+<li>Consider running in an isolated VM with synthetic browser data, to<br />
+  avoid even the appearance of unauthorised credential handling.</li>
+</ul>
+<h2 id="acceptable-use-in-a-corporate-environment">Acceptable use in a corporate environment</h2>
+<p>If your employer wants to deploy this tool for internal use:</p>
+<ul>
+<li>Document the authorisation (an internal IT-security policy<br />
+  approval, a signed engagement letter, or equivalent).</li>
+<li>Run only on company-owned machines or with the employee's informed<br />
+  consent.</li>
+<li>Store the reports in a controlled location with restricted access.</li>
+<li>Treat the reports as containing personal data and apply your<br />
+  company's data-protection policies.</li>
+<li>Ensure any deployment complies with applicable workplace surveillance<br />
+  laws (in the EU, see the Italian "Statuto dei lavoratori" Art. 4 and<br />
+  similar provisions in other member states; these may require<br />
+  union/works-council agreement before the tool is used systematically<br />
+  on employee machines).</li>
+</ul>
+<h2 id="unacceptable-use-will-get-you-in-legal-trouble">Unacceptable use (will get you in legal trouble)</h2>
+<ul>
+<li>Running the tool on a colleague's machine "as a prank".</li>
+<li>Decrypting credentials from a found USB stick / borrowed laptop.</li>
+<li>Running the tool as part of an unauthorised access campaign.</li>
+<li>Selling decrypted credentials.</li>
+<li>Boasting about decrypted credentials online.</li>
+<li>Using the tool to facilitate unauthorised access to a service you do<br />
+  not have an account for.</li>
+</ul>
+<p>If you are tempted to do any of the above, <strong>stop and consult a<br />
+lawyer</strong>. The penalties under the laws listed above are non-trivial<br />
+(years of imprisonment in several jurisdictions).</p>
+<h2 id="final-note">Final note</h2>
+<p>This project exists because <em>understanding</em> threats is the first step<br />
+to <em>defending</em> against them. Used as intended — on your own systems,<br />
+for your own education and protection — it is a powerful tool. Used<br />
+otherwise, it can cause real harm to real people, and it can land<br />
+the user in real legal trouble.</p>
+<p>Be the good guy.</p>
+  </div>
+  <nav class="page-nav"><a href="Threat-Model.html"><span class="nav-dir">← Previous</span><span class="nav-title">Threat Model</span></a></nav>
+</main>
+</body>
+</html>

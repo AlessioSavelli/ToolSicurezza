@@ -1,0 +1,49 @@
+MIT License
+
+Copyright (c) 2026 Alessio Savelli and ToolSicurezza contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ADDITIONAL ACCEPTABLE USE NOTICE
+
+This software is intended exclusively for:
+
+  (a) DEFENSIVE SECURITY AUDIT of computer systems owned by the user, or
+      systems for which the user has explicit written authorization to
+      perform security testing.
+
+  (b) EDUCATIONAL AND RESEARCH purposes related to credential storage,
+      cryptographic protections, and infostealer threat models.
+
+USE OF THIS SOFTWARE TO ACCESS, EXTRACT, OR PROCESS CREDENTIALS FROM SYSTEMS
+THE USER DOES NOT OWN OR DOES NOT HAVE EXPLICIT AUTHORIZATION TO AUDIT IS
+PROHIBITED AND MAY VIOLATE LOCAL, NATIONAL, AND INTERNATIONAL LAWS, INCLUDING
+BUT NOT LIMITED TO:
+
+  - Council of Europe Convention on Cybercrime (Budapest Convention, 2001)
+  - Directive (EU) 2013/40 on attacks against information systems
+  - Computer Fraud and Abuse Act (CFAA) - United States
+  - Italian Penal Code Art. 615-ter (unauthorized access to a computer system)
+  - GDPR (Regulation EU 2016/679) if personal data is involved
+
+The contributors and copyright holders do NOT endorse or accept liability for
+any use of this software in violation of applicable laws. See DISCLAIMER.md
+for the full ethical-use statement.

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HTML Report — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html" class="active">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Using The Tool<span>›</span>HTML Report</div>
+  <div id="content">
+<h1 id="html-report-guide">HTML Report Guide</h1>
+<p>The HTML report is the primary output of <code>infostealer_audit.py</code>. This<br />
+page explains each tab in detail.</p>
+<h2 id="file-layout">File layout</h2>
+<pre><code>reports/
+├── infostealer_&lt;timestamp&gt;.html              # default
+├── infostealer_showpassword_&lt;timestamp&gt;.html # with --showpassword
+└── audit_aggressive_&lt;timestamp&gt;.log          # console log from pwd_audit --aggressive
+</code></pre>
+<h2 id="top-banner">Top banner</h2>
+<p>The banner at the top has:</p>
+<ul>
+<li>A risk colour (CRITICAL / HIGH / MEDIUM / LOW) for your <strong>overall</strong><br />
+  exposure.</li>
+<li>Quick stats: number of browsers, decrypted vs. protected credentials,<br />
+  number of outdated browsers, number of infostealer targets present,<br />
+  number of recovery tools available.</li>
+</ul>
+<p>A short paragraph under the banner explains what the report represents<br />
+and reminds you that the password mode (masked vs. plaintext) is shown.</p>
+<h2 id="tab-1-overview">Tab 1 — Overview</h2>
+<p>The first thing you see after the banner. It contains the <strong>version<br />
+comparison matrix</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Browser</td>
+<td>Name of the detected browser</td>
+</tr>
+<tr>
+<td>Installed</td>
+<td>Version currently installed on this machine</td>
+</tr>
+<tr>
+<td>Current stable</td>
+<td>Latest stable version fetched live from the vendor</td>
+</tr>
+<tr>
+<td>Δ</td>
+<td>Difference in major version. <code>+0</code> = up-to-date; <code>+1</code> = one major behind; <code>+N</code> for older</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>OK / LOW / MEDIUM / HIGH / CRITICAL based on the gap</td>
+</tr>
+</tbody>
+</table>
+<p>Rows with <code>Risk = OK</code> are green. Anything else is amber/red.</p>
+<h2 id="tab-2-accounts-per-browser">Tab 2 — Accounts per browser</h2>
+<p>For each browser and each profile, a collapsible table with one row per<br />
+saved credential. Columns:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td>The site this credential is for</td>
+</tr>
+<tr>
+<td>Username</td>
+<td>The username (left as stored)</td>
+</tr>
+<tr>
+<td>Password</td>
+<td>Masked (<code>M*****a</code>) or plaintext if <code>--showpassword</code>. For v20-protected, shows <code>[v20-PROTECTED]</code></td>
+</tr>
+<tr>
+<td>Cipher</td>
+<td>Which encryption scheme was used to store this credential. Colour-coded.</td>
+</tr>
+<tr>
+<td>Category</td>
+<td>Auto-classification: Banking / Email / Cloud-Dev / Gaming / Social / Shopping / Router / etc.</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>CRITICAL / HIGH / MEDIUM / LOW based on the site category</td>
+</tr>
+</tbody>
+</table>
+<p>Sort order: by <em>decryptability first</em> (decrypted on top), then by site<br />
+criticality, then by URL.</p>
+<h3 id="cipher-legend">Cipher legend</h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Meaning</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v10 (AES-GCM + DPAPI user)</code></td>
+<td>Chrome 80–126 scheme. User-mode infostealer can decrypt in seconds.</td>
+<td>9/10</td>
+</tr>
+<tr>
+<td><code>v20 (ABE - DECRYPTED!)</code></td>
+<td>Chrome 127+ App-Bound Encryption, but the tool managed to decrypt it. Indicates aggressive-mode or external help.</td>
+<td>8/10</td>
+</tr>
+<tr>
+<td><code>v20-ABE protected</code></td>
+<td>Chrome 127+ ABE, the tool could <strong>not</strong> decrypt. Best protection currently.</td>
+<td>2/10</td>
+</tr>
+<tr>
+<td><code>pre-v10 (DPAPI direct)</code></td>
+<td>Chrome &lt;80 scheme. Trivial to decrypt.</td>
+<td>10/10</td>
+</tr>
+<tr>
+<td><code>NSS PBKDF2+AES-256</code></td>
+<td>Firefox scheme. Decryptable in user-mode unless a Primary Password is set.</td>
+<td>6/10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tab-3-versions-cve">Tab 3 — Versions &amp; CVE</h2>
+<p>Reproduces the version comparison from Overview plus, for each<br />
+installed browser, the list of <strong>bypass techniques</strong> known to work<br />
+against that version, sourced from the KB.</p>
+<p>Each bypass technique is shown as a card with:</p>
+<ul>
+<li><strong>Name</strong> of the technique</li>
+<li><strong>Complexity</strong> tag</li>
+<li><strong>Description</strong></li>
+<li><strong>Used by</strong> list of infostealer families that have implemented it</li>
+<li><strong>Ref</strong> link to the public research</li>
+</ul>
+<p>At the bottom: a "Fix" call-out with the milestone version and release<br />
+date that fixed each technique.</p>
+<h2 id="tab-4-targets">Tab 4 — Targets</h2>
+<p>A table of nine classic infostealer targets:</p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Discord Token</td>
+<td><code>%APPDATA%\discord\Local Storage\leveldb</code></td>
+</tr>
+<tr>
+<td>Steam autologin</td>
+<td><code>loginusers.vdf</code> + <code>ssfn*</code> files</td>
+</tr>
+<tr>
+<td>Crypto wallets (browser ext.)</td>
+<td>25+ wallet extension IDs</td>
+</tr>
+<tr>
+<td>Telegram Desktop session</td>
+<td><code>tdata</code> folder</td>
+</tr>
+<tr>
+<td>SSH private keys</td>
+<td><code>~/.ssh/id_rsa</code>, <code>id_ed25519</code>, etc.</td>
+</tr>
+<tr>
+<td>GPG keyring</td>
+<td><code>~/AppData/Roaming/gnupg</code></td>
+</tr>
+<tr>
+<td>FileZilla saved sites</td>
+<td><code>sitemanager.xml</code></td>
+</tr>
+<tr>
+<td>Windows Credential Manager</td>
+<td>total entry count</td>
+</tr>
+<tr>
+<td>VPN client configs</td>
+<td>OpenVPN <code>.ovpn</code>, WireGuard configs</td>
+</tr>
+</tbody>
+</table>
+<p>Each row is colour-coded: amber if present, grey if not. Value column<br />
+shows the severity rating for an attacker.</p>
+<h2 id="tab-5-lazagne-light">Tab 5 — LaZagne Light</h2>
+<p>Built-in pure-Python replica of the most useful LaZagne categories.<br />
+Each subsection has its own table:</p>
+<ul>
+<li><strong>Wi-Fi profiles</strong> — SSID, auth, cipher, key (cleartext if<br />
+<code>--showpassword</code>)</li>
+<li><strong>PuTTY sessions</strong> — host, port, user, protocol (no passwords by<br />
+  design)</li>
+<li><strong>WinSCP sessions</strong> — host, user, <strong>decrypted password</strong> (XOR<br />
+  algorithm)</li>
+<li><strong>Git credentials</strong> — URL, user, password (<code>~/.git-credentials</code> is<br />
+  plaintext!)</li>
+<li><strong>OpenVPN configs</strong> — config file, auth file, username/password if<br />
+  saved</li>
+<li><strong>FileZilla saved sites</strong> — host, user, password (base64)</li>
+<li><strong>Thunderbird credentials</strong> — same NSS scheme as Firefox</li>
+<li><strong>Pidgin chat accounts</strong> — protocol, name, password (plaintext)</li>
+<li><strong>DBVisualizer databases</strong> — alias, URL, user, password</li>
+<li><strong>RDP files</strong> — host, user, whether DPAPI-encrypted password is<br />
+  attached</li>
+<li><strong>Cisco AnyConnect profiles</strong> — host list</li>
+<li><strong>Chat/messaging apps</strong> — Slack/Teams/Telegram/Signal/WhatsApp<br />
+  presence</li>
+</ul>
+<p>If your PC is a desktop without a wireless adapter you will see "Wi-Fi<br />
+profiles (n/a)" instead of an empty table — the tool detects the<br />
+<code>wlansvc</code> service not running.</p>
+<h2 id="tab-6-legacy-credentials">Tab 6 — Legacy credentials</h2>
+<ul>
+<li><strong>Windows Credential Manager</strong> — table of <code>cmdkey /list</code> entries<br />
+  (target, type, user, persistence). The actual cleartext password is<br />
+  not extracted by default; this section just shows what's there.</li>
+<li><strong>IE / Edge Legacy Vault</strong> — count of <code>.vcrd</code> / <code>.vpol</code> files in<br />
+<code>%LOCALAPPDATA%\Microsoft\Vault\</code>. Decryption is documented but not<br />
+  implemented (LaZagne has it if you really need it).</li>
+<li><strong>Wi-Fi profiles</strong> — same as in the LaZagne Light tab, duplicated<br />
+  here for legacy parity.</li>
+<li><strong>Outlook profiles</strong> — registry entries enumerated.</li>
+</ul>
+<h2 id="tab-7-recovery-tools">Tab 7 — Recovery tools</h2>
+<p>Status of the optional external Python tools the audit can leverage:</p>
+<ul>
+<li><code>pypykatz</code> — mimikatz pure-Python</li>
+<li><code>firepwd_internal</code> — our built-in Firefox NSS decryptor</li>
+<li><code>browser_cookie3</code> — cookie extractor</li>
+<li><code>LaZagne</code> — opt-in only (PUA-flagged)</li>
+</ul>
+<p>Each card shows: installed yes/no, whether it was newly installed or<br />
+upgraded on this run, the GitHub URL, and use-case examples.</p>
+<h2 id="tab-8-fix-recommendations">Tab 8 — Fix recommendations</h2>
+<p>Ordered by priority: CRITICAL first. Each card has:</p>
+<ul>
+<li><strong>Action</strong> — what to do, one sentence.</li>
+<li><strong>Why</strong> — the rationale, citing risk level and threat model.</li>
+<li><strong>How</strong> — exact steps.</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><em>"Update Chrome to 148"</em> — because outdated browsers expose more<br />
+  techniques.</li>
+<li><em>"Disable Save Password in the browser"</em> — because reducing the<br />
+  attack surface is better than relying on encryption.</li>
+<li><em>"Migrate to a password manager"</em> — because v10 is decryptable in<br />
+  seconds and v20 protection cannot keep up with every infostealer<br />
+  release.</li>
+</ul>
+<h2 id="tab-9-abe-timeline">Tab 9 — ABE Timeline</h2>
+<p>Chrome version ranges from <code>&lt; 127</code> to <code>&gt;= 148</code>, each annotated with:</p>
+<ul>
+<li><strong>Label</strong> for that era ("Pre-ABE", "Inner AES wrapping", ...)</li>
+<li><strong>Decrypt difficulty</strong></li>
+<li><strong>Description</strong></li>
+<li><strong>Applicable bypasses</strong> as code-formatted IDs</li>
+<li><strong>Fix</strong> — milestone version + release date</li>
+</ul>
+<p>The row matching <strong>your</strong> Chrome version is highlighted in blue.</p>
+<p>This is the most useful tab for understanding <em>why</em> the answer is what<br />
+it is. Read it top-to-bottom.</p>
+<h2 id="multilanguage-support">Multilanguage support</h2>
+<p>The HTML report is fully localised in <strong>five languages</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Language</th>
+<th>Auto-detected from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>it</code></td>
+<td>Italiano</td>
+<td>Windows locale <code>it-IT</code>, <code>it-CH</code>, etc.</td>
+</tr>
+<tr>
+<td><code>en</code></td>
+<td>English</td>
+<td>Any locale not matched below (default)</td>
+</tr>
+<tr>
+<td><code>fr</code></td>
+<td>Français</td>
+<td>Windows locale <code>fr-*</code></td>
+</tr>
+<tr>
+<td><code>de</code></td>
+<td>Deutsch</td>
+<td>Windows locale <code>de-*</code> (also <code>--lang du</code>)</td>
+</tr>
+<tr>
+<td><code>es</code></td>
+<td>Español</td>
+<td>Windows locale <code>es-*</code></td>
+</tr>
+</tbody>
+</table>
+<p>The language is <strong>auto-detected</strong> from the Windows registry key<br />
+<code>HKCU\Control Panel\International\LocaleName</code> at runtime. You can<br />
+override it with <code>--lang</code>:</p>
+<pre><code class="language-powershell">py infostealer_audit.py --lang fr
+py pwd_audit.py --lang de
+</code></pre>
+<p>Every string in the report — tab names, column headers, stat-box<br />
+labels, warning messages, fix recommendations wording — is translated.<br />
+The <code>&lt;html lang="xx"&gt;</code> attribute is also set correctly, which helps<br />
+screen readers and browser spell-checkers.</p>
+<p>Translations live in <code>modules/i18n.py</code>. See<br />
+<a href="Architecture.html">Architecture</a> for details, and<br />
+<a href="Adding-a-Browser.html">Adding a Browser</a> for the extension pattern<br />
+(the same applies to adding a new language).</p>
+<h3 id="preview-without-running-the-tool">Preview without running the tool</h3>
+<p>Five sanitized demo reports (one per language) are available in<br />
+<a href="demo-reports/"><code>wiki/demo-reports/</code></a>:</p>
+<table>
+<thead>
+<tr>
+<th>Report</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="demo-reports/IT_infostealer_demo.html">IT_infostealer_demo.html</a></td>
+<td>🇮🇹 Italiano</td>
+</tr>
+<tr>
+<td><a href="demo-reports/EN_infostealer_demo.html">EN_infostealer_demo.html</a></td>
+<td>🇬🇧 English</td>
+</tr>
+<tr>
+<td><a href="demo-reports/FR_infostealer_demo.html">FR_infostealer_demo.html</a></td>
+<td>🇫🇷 Français</td>
+</tr>
+<tr>
+<td><a href="demo-reports/DE_infostealer_demo.html">DE_infostealer_demo.html</a></td>
+<td>🇩🇪 Deutsch</td>
+</tr>
+<tr>
+<td><a href="demo-reports/ES_infostealer_demo.html">ES_infostealer_demo.html</a></td>
+<td>🇪🇸 Español</td>
+</tr>
+</tbody>
+</table>
+<p>All personal data in those files has been replaced with fictional<br />
+placeholders. See <a href="Demo-Reports.html">Demo Reports</a> for the full<br />
+description.</p>
+<hr />
+<h2 id="saving-and-sharing-reports">Saving and sharing reports</h2>
+<ul>
+<li>The HTML is <strong>self-contained</strong> (no external CSS or JS). You can<br />
+  email it, attach to a ticket, or print to PDF.</li>
+<li>If you used <code>--showpassword</code>, <strong>do not share the report</strong> — it<br />
+  contains plaintext credentials. Either redact, regenerate without<br />
+  the flag, or delete after use.</li>
+<li>The HTML uses <code>localStorage</code> only for the LaZagne tab interactivity<br />
+  in some versions; no remote tracking, no analytics.</li>
+</ul>
+  </div>
+  <nav class="page-nav"><a href="CLI-Reference.html"><span class="nav-dir">← Previous</span><span class="nav-title">CLI Reference</span></a><a href="Demo-Reports.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">Demo Reports</span></a></nav>
+</main>
+</body>
+</html>

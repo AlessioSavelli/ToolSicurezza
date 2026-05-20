@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knowledge Base — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html" class="active">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Internals<span>›</span>Knowledge Base</div>
+  <div id="content">
+<h1 id="knowledge-base">Knowledge Base</h1>
+<p><code>kb/vulnerabilities.json</code> is a curated, public-research-based database<br />
+that maps <strong>Chrome versions</strong> to <strong>bypass techniques</strong> to <strong>infostealer<br />
+families</strong> to <strong>fix milestones</strong>. The audit tool reads it to produce<br />
+context for every detected browser.</p>
+<p>This page explains the schema and how to update it.</p>
+<h2 id="top-level-structure">Top-level structure</h2>
+<pre><code class="language-json">{
+  &quot;_meta&quot;: { ... },
+  &quot;chromium_abe_timeline&quot;: [ ... ],
+  &quot;bypass_techniques&quot;: { ... },
+  &quot;browsers&quot;: { ... },
+  &quot;known_infostealers&quot;: { ... },
+  &quot;infostealer_targets&quot;: { ... }
+}
+</code></pre>
+<h2 id="_meta"><code>_meta</code></h2>
+<pre><code class="language-json">&quot;_meta&quot;: {
+  &quot;schema_version&quot;: &quot;1.1&quot;,
+  &quot;last_updated&quot;: &quot;2026-05-20&quot;,
+  &quot;current_chrome_stable&quot;: &quot;148&quot;,
+  &quot;current_chrome_stable_date&quot;: &quot;2026-05-05&quot;,
+  &quot;current_firefox_stable&quot;: &quot;150&quot;,
+  &quot;current_edge_stable&quot;: &quot;148&quot;,
+  &quot;sources&quot;: [ &quot;https://...&quot;, ... ],
+  &quot;disclaimer&quot;: &quot;...&quot;
+}
+</code></pre>
+<p>Bump <code>last_updated</code> and <code>current_*</code> whenever you update the KB.</p>
+<p><strong>Schema changelog:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>Initial schema — <code>chromium_abe_timeline</code>, <code>bypass_techniques</code>, <code>browsers</code>, <code>known_infostealers</code>, <code>infostealer_targets</code></td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>Added <code>browser_cves</code> section; 20 infostealer families (up from 17: Storm, REMUS, Shai-Hulud, PennyWise); corrected <code>debugger-attach-voidstealer</code> <code>requires_admin</code> field for v2.0+; new <code>server-side-exfil-decrypt</code> bypass technique; 12 Chrome/Windows CVEs with CVSS, in-wild flag, fix version</td>
+</tr>
+</tbody>
+</table>
+<h2 id="browser_cves-new-in-v11"><code>browser_cves</code> <em>(new in v1.1)</em></h2>
+<p>Array of CVE objects for Chrome, Edge, and Windows components:</p>
+<pre><code class="language-json">{
+  &quot;cve_id&quot;: &quot;CVE-2026-3910&quot;,
+  &quot;component&quot;: &quot;V8 JavaScript Engine&quot;,
+  &quot;browser&quot;: &quot;Chrome&quot;,
+  &quot;type&quot;: &quot;Type confusion&quot;,
+  &quot;cvss_score&quot;: 8.8,
+  &quot;exploited_in_wild&quot;: true,
+  &quot;affected_versions&quot;: &quot;&lt; 136.0.7103.113&quot;,
+  &quot;fixed_in&quot;: &quot;136.0.7103.113&quot;,
+  &quot;fix_date&quot;: &quot;2026-04-15&quot;,
+  &quot;ref&quot;: &quot;https://chromereleases.googleblog.com/...&quot;
+}
+</code></pre>
+<h3 id="field-semantics">Field semantics</h3>
+<ul>
+<li><code>exploited_in_wild</code>: <code>true</code> if Google / MSRC confirmed active<br />
+  exploitation at the time of the advisory.</li>
+<li><code>cvss_score</code>: NVD base score. Use <code>null</code> if not yet assigned.</li>
+<li><code>affected_versions</code>: semver range. Use <code>&lt; N</code> for "fixed in N",<br />
+<code>&gt;= A, &lt; B</code> for a bounded range.</li>
+</ul>
+<p>Sources accepted for <code>browser_cves</code>: NVD (nvd.nist.gov),<br />
+Google Chrome Releases blog, Microsoft MSRC, zero-day.cz.</p>
+<h2 id="chromium_abe_timeline"><code>chromium_abe_timeline</code></h2>
+<p>Array of objects. Each object describes a Chrome version range and the<br />
+security regime of that era.</p>
+<pre><code class="language-json">{
+  &quot;version_range&quot;: &quot;131 - 135&quot;,
+  &quot;label&quot;: &quot;Inner AES wrapping (Stratum 3)&quot;,
+  &quot;abe_status&quot;: &quot;ABE_V2&quot;,
+  &quot;decrypt_difficulty&quot;: &quot;HARD&quot;,
+  &quot;description&quot;: &quot;Aggiunto strato finale di AES con constant key hardcoded in chrome.dll...&quot;,
+  &quot;applicable_bypasses&quot;: [
+    &quot;chrome-dll-signature-scanning&quot;,
+    &quot;dll-injection-chrome-exe&quot;,
+    &quot;reflective-process-hollowing&quot;,
+    &quot;debugger-attach-voidstealer&quot;
+  ],
+  &quot;released_date&quot;: &quot;2024-11-12&quot;,
+  &quot;fix&quot;: {
+    &quot;fixed_in&quot;: &quot;136+&quot;,
+    &quot;fixed_date&quot;: &quot;2025-04-29&quot;,
+    &quot;milestone&quot;: &quot;Remote debugging port restriction&quot;
+  }
+}
+</code></pre>
+<h3 id="field-semantics_1">Field semantics</h3>
+<ul>
+<li><code>version_range</code>: <code>&lt; N</code>, <code>&gt;= N</code>, <code>N</code>, <code>N.x</code>, <code>N - M</code>. Used by<br />
+<code>_version_in_range()</code>.</li>
+<li><code>decrypt_difficulty</code>: <code>TRIVIAL</code>, <code>LOW</code>, <code>MEDIUM</code>, <code>HARD</code>, <code>VERY_HARD</code>.<br />
+  Drives the colour and risk score in the report.</li>
+<li><code>applicable_bypasses</code>: array of technique-IDs that point into<br />
+<code>bypass_techniques</code>.</li>
+<li><code>fix.fixed_in</code>: the major version that mitigated the issue, e.g.<br />
+<code>131+</code> means "fixed in 131 and later".</li>
+</ul>
+<h2 id="bypass_techniques"><code>bypass_techniques</code></h2>
+<p>Dictionary keyed by technique-ID:</p>
+<pre><code class="language-json">&quot;chrome-dll-signature-scanning&quot;: {
+  &quot;name&quot;: &quot;chrome.dll constant key extraction (Stratum 3 bypass)&quot;,
+  &quot;complexity&quot;: &quot;VERY_HIGH&quot;,
+  &quot;requires_admin&quot;: false,
+  &quot;requires_system&quot;: true,
+  &quot;description&quot;: &quot;Pattern-scan chrome.dll for the constant AES key used in the final wrap...&quot;,
+  &quot;used_by&quot;: [&quot;Lumma Pro 2025&quot;, &quot;Stealc V2&quot;],
+  &quot;detection&quot;: &quot;File access pattern, YARA on known signatures&quot;,
+  &quot;ref&quot;: &quot;https://...&quot;
+}
+</code></pre>
+<p><code>complexity</code>: <code>TRIVIAL</code>, <code>LOW</code>, <code>MEDIUM</code>, <code>HIGH</code>, <code>VERY_HIGH</code>.</p>
+<p><code>used_by</code> and <code>ref</code> should always cite <strong>public</strong> research. We do not<br />
+include private threat-intelligence.</p>
+<h3 id="current-technique-ids">Current technique IDs</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Added</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>com-elevator-path-bypass</code></td>
+<td>COM IElevator path validation bypass</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td><code>dll-injection-chrome-exe</code></td>
+<td>DLL injection into chrome.exe</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td><code>reflective-process-hollowing</code></td>
+<td>Reflective process hollowing</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td><code>chrome-dll-signature-scanning</code></td>
+<td>chrome.dll constant-key extraction (Stratum 3)</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td><code>remote-debugging-port</code></td>
+<td><code>--remote-debugging-port</code> abuse</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td><code>debugger-attach-voidstealer</code></td>
+<td>Debugger attach + hardware breakpoint (VoidStealer v2.0)</td>
+<td>v1.0 / corrected v1.1</td>
+</tr>
+<tr>
+<td><code>server-side-exfil-decrypt</code></td>
+<td>Server-side blob exfiltration + remote decryption (Storm)</td>
+<td>v1.1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="browsers"><code>browsers</code></h2>
+<p>Per-browser metadata:</p>
+<pre><code class="language-json">&quot;Chrome&quot;: {
+  &quot;vendor&quot;: &quot;Google&quot;,
+  &quot;engine&quot;: &quot;Chromium&quot;,
+  &quot;abe_enabled&quot;: true,
+  &quot;config_path&quot;: &quot;%LOCALAPPDATA%\\Google\\Chrome\\User Data&quot;,
+  &quot;version_registry&quot;: [&quot;HKLM\\SOFTWARE\\Google\\Chrome\\BLBeacon&quot;, &quot;...&quot;],
+  &quot;version_binary&quot;: &quot;%PROGRAMFILES%\\Google\\Chrome\\Application\\chrome.exe&quot;,
+  &quot;current_stable&quot;: &quot;148&quot;,
+  &quot;release_cycle_weeks&quot;: 4,
+  &quot;notes&quot;: &quot;...&quot;
+}
+</code></pre>
+<h2 id="known_infostealers"><code>known_infostealers</code></h2>
+<p>Documented infostealer families (<strong>20 entries</strong> as of KB v1.1). Each<br />
+entry is <strong>public</strong> information from threat-intelligence reports.</p>
+<h3 id="current-families">Current families</h3>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>First seen</th>
+<th>Notable bypass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RedLine</td>
+<td>2020-03</td>
+<td>DPAPI user-mode</td>
+</tr>
+<tr>
+<td>Vidar</td>
+<td>2018-10</td>
+<td>DPAPI user-mode</td>
+</tr>
+<tr>
+<td>Lumma C2</td>
+<td>2022-08</td>
+<td>Dual injection / chrome.dll scan</td>
+</tr>
+<tr>
+<td>Phemedrone</td>
+<td>2023-12</td>
+<td>COM IElevator</td>
+</tr>
+<tr>
+<td>Meduza</td>
+<td>2023-06</td>
+<td>COM IElevator</td>
+</tr>
+<tr>
+<td>StealC</td>
+<td>2023-01</td>
+<td>DPAPI user-mode</td>
+</tr>
+<tr>
+<td>Rhadamanthys</td>
+<td>2022-09</td>
+<td>COM IElevator + reflective hollowing</td>
+</tr>
+<tr>
+<td>WhiteSnake</td>
+<td>2023-02</td>
+<td>COM IElevator</td>
+</tr>
+<tr>
+<td>Meta Stealer</td>
+<td>2022-03</td>
+<td>DPAPI user-mode</td>
+</tr>
+<tr>
+<td>Lumar</td>
+<td>2023-07</td>
+<td>DPAPI user-mode</td>
+</tr>
+<tr>
+<td>Glove Stealer</td>
+<td>2024-11</td>
+<td>COM IElevator</td>
+</tr>
+<tr>
+<td>Kepavll</td>
+<td>2024-01</td>
+<td>DPAPI user-mode</td>
+</tr>
+<tr>
+<td>Stealc V2</td>
+<td>2024-06</td>
+<td>chrome.dll signature scanning</td>
+</tr>
+<tr>
+<td>Lumma Pro 2025</td>
+<td>2025-01</td>
+<td>chrome.dll signature scanning</td>
+</tr>
+<tr>
+<td>PureLogs</td>
+<td>2023-04</td>
+<td>DPAPI user-mode</td>
+</tr>
+<tr>
+<td>Atomic (AMOS)</td>
+<td>2023-04</td>
+<td>macOS-native (no ABE bypass)</td>
+</tr>
+<tr>
+<td>VoidStealer</td>
+<td>2025-06</td>
+<td>Debugger attach + hardware breakpoint (v2.0: no elevation)</td>
+</tr>
+<tr>
+<td>Storm</td>
+<td>2026-01</td>
+<td>Server-side encrypted blob exfiltration</td>
+</tr>
+<tr>
+<td>REMUS</td>
+<td>2026-02</td>
+<td>IndexedDB password manager harvesting</td>
+</tr>
+<tr>
+<td>Shai-Hulud</td>
+<td>2026-03</td>
+<td>npm supply chain</td>
+</tr>
+<tr>
+<td>PennyWise</td>
+<td>2026-04</td>
+<td>YouTube distribution</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>PennyWise (2026 revival) should not be confused with the 2022 variant.</p>
+</blockquote>
+<pre><code class="language-json">&quot;Lumma C2&quot;: {
+  &quot;first_seen&quot;: &quot;2022-08&quot;,
+  &quot;ttp_summary&quot;: &quot;MaaS very active 2024-2025. v20 bypass via dual-injection (Cybereason 2024)...&quot;,
+  &quot;browser_targets&quot;: [&quot;Chrome&quot;, &quot;Edge&quot;, &quot;Brave&quot;, &quot;Vivaldi&quot;, &quot;Opera&quot;, &quot;Firefox&quot;, &quot;Tor&quot;],
+  &quot;abe_bypass&quot;: &quot;Dual injection + COM IElevator (early variants) / chrome.dll scan&quot;,
+  &quot;max_chrome_supported&quot;: &quot;current&quot;,
+  &quot;ref&quot;: &quot;https://cyble.com/blog/dual-injection-undermines-chromes-encryption/&quot;
+}
+</code></pre>
+<p>We do <strong>not</strong> include:</p>
+<ul>
+<li>Sample SHA256 hashes (could be used as IoCs against innocent parties)</li>
+<li>Operational C2 domain lists</li>
+<li>Detailed YARA rules</li>
+<li>Detonation procedures</li>
+</ul>
+<p>We <strong>do</strong> include:</p>
+<ul>
+<li>Documented TTPs</li>
+<li>Browser/OS targets</li>
+<li>Bypass technique families</li>
+<li>Public research links</li>
+</ul>
+<h2 id="infostealer_targets"><code>infostealer_targets</code></h2>
+<p>Catalogue of the bersagli (target categories), with severity. Used by<br />
+the report to colour-code the Targets tab and the LaZagne Light tab.</p>
+<h2 id="updating-the-kb">Updating the KB</h2>
+<p>When you contribute to the KB:</p>
+<ol>
+<li>Pick a clear source. Acceptable sources are:</li>
+<li>Peer-reviewed papers</li>
+<li>Vendor security advisories (Google, Microsoft, Mozilla)</li>
+<li>Reputable security-firm blog posts (Cybereason, Mandiant,<br />
+     CrowdStrike, BlackBerry, etc.)</li>
+<li>
+<p>Public threat-intel reports</p>
+</li>
+<li>
+<p>Update <code>_meta.last_updated</code>, <code>_meta.current_chrome_stable</code>, etc.</p>
+</li>
+<li>
+<p>If you are documenting a new era, add a new entry to<br />
+<code>chromium_abe_timeline</code>. Make sure the previous entry's<br />
+<code>version_range</code> ends where yours begins.</p>
+</li>
+<li>
+<p>If you are documenting a new bypass technique, add it to<br />
+<code>bypass_techniques</code> <strong>and</strong> reference it from the relevant timeline<br />
+   entries.</p>
+</li>
+<li>
+<p>If you are documenting a new infostealer family, add it to<br />
+<code>known_infostealers</code>.</p>
+</li>
+<li>
+<p>Add the URL to <code>_meta.sources</code> if it's a new source.</p>
+</li>
+<li>
+<p>Open a PR. Cite the source in the PR description.</p>
+</li>
+</ol>
+<h2 id="schema-validation">Schema validation</h2>
+<p>The KB is loaded with <code>json.load</code>. There is no formal schema validator<br />
+yet (planned for a future release using <code>jsonschema</code>). For now, please<br />
+ensure the file is valid JSON before committing:</p>
+<pre><code class="language-powershell">py -c &quot;import json; json.load(open('kb/vulnerabilities.json', encoding='utf-8')); print('KB OK')&quot;
+</code></pre>
+<h2 id="why-json-and-not-yaml-toml">Why JSON and not YAML / TOML</h2>
+<ul>
+<li>JSON parses identically across all Python versions.</li>
+<li>Easy to validate.</li>
+<li>Tooling-friendly (<code>jq</code>, online viewers, etc.).</li>
+<li>The KB is human-edited but machine-read; comments would be nice but<br />
+  we live without them.</li>
+</ul>
+<p>Comments (where useful) are inserted as keys prefixed with <code>_note</code>,<br />
+<code>_comment</code>, etc.</p>
+  </div>
+  <nav class="page-nav"><a href="Architecture.html"><span class="nav-dir">← Previous</span><span class="nav-title">Architecture</span></a><a href="Adding-a-Browser.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">Adding a Browser</span></a></nav>
+</main>
+</body>
+</html>

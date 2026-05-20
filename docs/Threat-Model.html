@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Threat Model — ToolSicurezza Docs</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:#f0f2f5;color:#1a202c;display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:268px;min-width:268px;background:#1e2535;color:#cbd5e0;
+  display:flex;flex-direction:column;position:sticky;top:0;
+  height:100vh;overflow-y:auto;z-index:10;
+  scrollbar-width:thin;scrollbar-color:#4a5568 transparent}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#4a5568;border-radius:2px}
+
+.sidebar-logo{
+  padding:20px 20px 16px;border-bottom:1px solid #2d3748}
+.sidebar-logo a{
+  text-decoration:none;color:#e2e8f0;font-size:1.05rem;font-weight:700;
+  display:flex;align-items:center;gap:8px}
+.sidebar-logo .badge{
+  background:#3182ce;color:#fff;font-size:.65rem;padding:2px 6px;
+  border-radius:10px;font-weight:600;letter-spacing:.4px}
+
+.nav-section{padding:20px 16px 4px}
+.nav-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:1px;
+  color:#718096;text-transform:uppercase;padding:0 8px 6px}
+.nav-section a{
+  display:block;padding:6px 10px;border-radius:6px;
+  color:#a0aec0;text-decoration:none;font-size:.875rem;
+  transition:background .15s,color .15s;margin-bottom:1px}
+.nav-section a:hover{background:#2d3748;color:#e2e8f0}
+.nav-section a.active{
+  background:#2b6cb0;color:#fff;font-weight:600}
+
+.sidebar-footer{
+  margin-top:auto;padding:16px 20px;border-top:1px solid #2d3748;
+  font-size:.75rem;color:#718096}
+.sidebar-footer a{color:#90cdf4;text-decoration:none}
+.sidebar-footer a:hover{text-decoration:underline}
+
+/* ── Main content ── */
+#main{flex:1;min-width:0;padding:40px 48px 80px;max-width:980px}
+
+/* breadcrumb */
+.breadcrumb{font-size:.8rem;color:#718096;margin-bottom:24px}
+.breadcrumb a{color:#3182ce;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{margin:0 6px}
+
+/* headings */
+#content h1{font-size:2rem;font-weight:700;color:#1a202c;
+  margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid #e2e8f0}
+#content h2{font-size:1.35rem;font-weight:700;color:#2d3748;
+  margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid #e8ecf0}
+#content h3{font-size:1.1rem;font-weight:600;color:#2d3748;margin:28px 0 10px}
+#content h4{font-size:.95rem;font-weight:600;color:#4a5568;margin:20px 0 8px}
+
+/* paragraph, lists */
+#content p{line-height:1.75;color:#2d3748;margin:0 0 16px}
+#content ul,#content ol{padding-left:1.5em;margin:0 0 16px}
+#content li{line-height:1.7;margin-bottom:4px}
+#content li p{margin-bottom:4px}
+
+/* inline code */
+#content code{
+  background:#edf2f7;color:#c7254e;padding:1px 5px;
+  border-radius:4px;font-size:.875em;font-family:'SFMono-Regular',Consolas,
+  'Liberation Mono',Menlo,monospace}
+
+/* code blocks */
+#content pre{
+  background:#1e2535;border-radius:8px;padding:20px 22px;margin:0 0 20px;
+  overflow-x:auto;border:1px solid #2d3748}
+#content pre code{
+  background:none;color:#a8b8d8;padding:0;font-size:.84rem;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  line-height:1.65}
+
+/* tables */
+#content table{
+  border-collapse:collapse;width:100%;margin:0 0 20px;
+  font-size:.875rem;border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#content th{
+  background:#2d3748;color:#e2e8f0;padding:10px 14px;
+  text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.3px}
+#content td{
+  padding:9px 14px;border-bottom:1px solid #e8ecf0;color:#2d3748}
+#content tr:last-child td{border-bottom:none}
+#content tr:nth-child(even) td{background:#f7fafc}
+
+/* blockquote */
+#content blockquote{
+  border-left:4px solid #3182ce;background:#ebf8ff;
+  padding:12px 18px;border-radius:0 6px 6px 0;margin:0 0 20px;color:#2c5282}
+#content blockquote p{margin:0;color:inherit}
+
+/* horizontal rule */
+#content hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+
+/* links */
+#content a{color:#3182ce;text-decoration:none}
+#content a:hover{text-decoration:underline;color:#2b6cb0}
+
+/* page nav (prev/next) */
+.page-nav{
+  display:flex;justify-content:space-between;margin-top:48px;
+  padding-top:24px;border-top:1px solid #e2e8f0;gap:12px}
+.page-nav a{
+  display:flex;flex-direction:column;padding:14px 20px;
+  border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;
+  color:#2d3748;transition:border-color .2s,box-shadow .2s;
+  flex:1;max-width:48%}
+.page-nav a:hover{border-color:#3182ce;box-shadow:0 2px 8px rgba(49,130,206,.15)}
+.page-nav .nav-dir{font-size:.72rem;color:#718096;margin-bottom:4px;font-weight:600}
+.page-nav .nav-title{font-size:.9rem;font-weight:600;color:#2d3748}
+.page-nav .next{text-align:right;margin-left:auto}
+
+/* responsive */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #main{padding:24px 20px 60px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a href="Home.html">🛡 ToolSicurezza <span class="badge">v1.0</span></a>
+  </div>
+  <div class="nav-section"><div class="nav-section-title">GETTING STARTED</div><a href="Home.html">Home</a>
+<a href="Installation.html">Installation</a>
+<a href="Quick-Start.html">Quick Start</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">USING THE TOOL</div><a href="CLI-Reference.html">CLI Reference</a>
+<a href="HTML-Report.html">HTML Report</a>
+<a href="Demo-Reports.html">Demo Reports</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">INTERNALS</div><a href="Architecture.html">Architecture</a>
+<a href="Knowledge-Base.html">Knowledge Base</a>
+<a href="Adding-a-Browser.html">Adding a Browser</a>
+<a href="Contributing-KB.html">Contributing to KB</a>
+</div>
+<div class="nav-section"><div class="nav-section-title">REFERENCE</div><a href="FAQ.html">FAQ</a>
+<a href="Troubleshooting.html">Troubleshooting</a>
+<a href="Threat-Model.html" class="active">Threat Model</a>
+<a href="Legal-and-Ethics.html">Legal & Ethics</a>
+</div>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza" target="_blank">GitHub ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/AlessioSavelli/ToolSicurezza/blob/main/DISCLAIMER.md" target="_blank">Disclaimer</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="breadcrumb"><a href="Home.html">Docs</a><span>›</span>Reference<span>›</span>Threat Model</div>
+  <div id="content">
+<h1 id="threat-model">Threat Model</h1>
+<p>This page describes what this tool defends against, and what it<br />
+explicitly does <strong>not</strong> try to address.</p>
+<h2 id="in-scope-what-we-audit">In scope (what we audit)</h2>
+<h3 id="threat-actor-user-mode-infostealer">Threat actor: user-mode infostealer</h3>
+<p>The primary threat actor we audit against is a <strong>commodity Windows<br />
+infostealer</strong> that has obtained code execution as the current user (no<br />
+admin, no SYSTEM). Examples:</p>
+<ul>
+<li>RedLine, Vidar, Lumma C2, StealC, Rhadamanthys, Phemedrone, Glove<br />
+  Stealer, Stealka, Shuyal, Torg Grabber, Arkanix, ...</li>
+</ul>
+<p>The infostealer typically runs once, harvests credentials, exfiltrates,<br />
+and exits. It does not maintain persistence (other variants do, but<br />
+this is not our threat model).</p>
+<h3 id="what-such-a-threat-actor-can-and-cannot-do">What such a threat actor can and cannot do</h3>
+<p>✅ Can:</p>
+<ul>
+<li>Read any file the current user can read.</li>
+<li>Call DPAPI in the current user's context → decrypt v10 master keys.</li>
+<li>Read Chromium <code>Local State</code> and <code>Login Data</code>.</li>
+<li>Read Firefox <code>key4.db</code> and <code>logins.json</code>.</li>
+<li>Run <code>cmdkey /list</code> and read Windows Credential Manager entries.</li>
+<li>Read <code>~/.ssh/</code>, <code>~/.gnupg/</code>, <code>%APPDATA%\Telegram Desktop\tdata\</code>,<br />
+  Discord LevelDB, Steam VDF.</li>
+<li>Enumerate browser extensions and their per-extension data folders.</li>
+</ul>
+<p>❌ Cannot:</p>
+<ul>
+<li>Call DPAPI in SYSTEM context (would need elevation).</li>
+<li>Decrypt Chrome v20 ABE without bypass (Stratum 3 hardcoded constant<br />
+  in chrome.dll, requires DLL injection or signature scanning).</li>
+<li>Touch other users' profiles on the same machine.</li>
+<li>Read TPM-bound keys (DBSC, future Chrome).</li>
+</ul>
+<h3 id="our-coverage">Our coverage</h3>
+<p>For every credential store the threat actor can read, we read the same<br />
+data and report it back to the user. We close the loop by quantifying<br />
+exposure.</p>
+<h2 id="in-scope-what-we-audit-extended">In scope (what we audit, extended)</h2>
+<h3 id="threat-actor-admin-elevated-infostealer">Threat actor: admin-elevated infostealer</h3>
+<p>Some infostealers (or post-exploitation tools) gain Administrator. With<br />
+admin, additional capabilities open up:</p>
+<p>✅ Can additionally:</p>
+<ul>
+<li>Spawn a scheduled task as SYSTEM (this is what <code>--aggressive</code> mode<br />
+  demonstrates).</li>
+<li>Run <code>mimikatz</code>/<code>pypykatz</code> to dump LSASS and Credential Manager<br />
+  protected secrets.</li>
+<li>Disable Windows Defender (with policy bypass).</li>
+<li>Bypass v20 Stratum 2 (SYSTEM-DPAPI of the inner blob).</li>
+</ul>
+<p>❌ Still cannot (typically):</p>
+<ul>
+<li>Decrypt v20 Stratum 3 (chrome.dll constant) without DLL injection<br />
+  into chrome.exe itself.</li>
+<li>Read TPM-bound keys without active user session.</li>
+</ul>
+<h3 id="our-coverage-of-admin-scenarios">Our coverage of admin scenarios</h3>
+<p><code>--aggressive</code> mode in <code>pwd_audit.py</code> simulates this exactly:</p>
+<ol>
+<li>UAC elevation.</li>
+<li>Scheduled task as SYSTEM.</li>
+<li>SYSTEM DPAPI unwrap of the v20 inner blob.</li>
+<li>Try to find the AES key inside the unwrapped blob.</li>
+<li>Report the result.</li>
+</ol>
+<p>This lets the user see whether admin-level credential theft would<br />
+succeed or not.</p>
+<h2 id="out-of-scope-what-we-dont-audit">Out of scope (what we don't audit)</h2>
+<h3 id="threat-actor-kernel-level-firmware-level-attacker">Threat actor: kernel-level / firmware-level attacker</h3>
+<p>We do <strong>not</strong> address:</p>
+<ul>
+<li>Kernel rootkits.</li>
+<li>UEFI/BIOS implants.</li>
+<li>Hardware-backed memory acquisition (cold boot, DMA, ...).</li>
+<li>Bootkits.</li>
+</ul>
+<p>If an attacker has kernel-level access, they have everything. No<br />
+user-mode tool can defend against that.</p>
+<h3 id="threat-actor-physical-attacker-with-offline-disk">Threat actor: physical attacker with offline disk</h3>
+<p>We do <strong>not</strong> address:</p>
+<ul>
+<li>Attacker who removed the disk and is reading it on another machine.</li>
+</ul>
+<p>DPAPI is bound to the user account's master key, which itself is<br />
+encrypted with the user's NT hash. An offline attacker who knows or<br />
+brute-forces the NT hash can decrypt everything.</p>
+<p>Defense: BitLocker. Out of scope for this project but explicitly<br />
+recommended in the fix recommendations.</p>
+<h3 id="threat-actor-malicious-browser-extension">Threat actor: malicious browser extension</h3>
+<p>A malicious extension can read the credentials in the browser's<br />
+<strong>runtime</strong> memory, regardless of how they are stored on disk. We do<br />
+not audit installed browser extensions for malicious behaviour<br />
+(beyond detecting crypto wallet extensions, which we report as<br />
+<em>targets</em>, not <em>threats</em>).</p>
+<p>Defense: only install extensions from trusted sources. Periodic<br />
+review. Browser policy management.</p>
+<h3 id="network-based-threats">Network-based threats</h3>
+<p>We do not address:</p>
+<ul>
+<li>Phishing.</li>
+<li>Man-in-the-middle on the network.</li>
+<li>Credential stuffing on remote services.</li>
+</ul>
+<p>These threats exist regardless of local storage protection.</p>
+<h2 id="why-audit-at-all">Why audit at all?</h2>
+<p>If a sophisticated attacker (kernel-level, physical, or network) is<br />
+in your model, this tool is not enough. But the <strong>vast majority</strong> of<br />
+credential-theft incidents in 2025–2026 are commodity infostealers,<br />
+user-mode. Auditing what they would see is exactly what this tool<br />
+does, and what 99% of users actually need.</p>
+<h2 id="updating-this-model">Updating this model</h2>
+<p>Threats evolve. When you see news of a new technique:</p>
+<ol>
+<li>Add it to <code>kb/vulnerabilities.json</code> under <code>bypass_techniques</code>.</li>
+<li>Reference it from the relevant timeline entry.</li>
+<li>If it changes our coverage (we can now audit something we<br />
+   couldn't), implement it in a module.</li>
+<li>If it falls outside our scope (e.g., requires kernel access),<br />
+   document it here.</li>
+</ol>
+  </div>
+  <nav class="page-nav"><a href="Troubleshooting.html"><span class="nav-dir">← Previous</span><span class="nav-title">Troubleshooting</span></a><a href="Legal-and-Ethics.html" class="next"><span class="nav-dir">Next →</span><span class="nav-title">Legal & Ethics</span></a></nav>
+</main>
+</body>
+</html>
